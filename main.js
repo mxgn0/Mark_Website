@@ -5,25 +5,32 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ─── COOKIE BANNER ───
-  const banner   = document.getElementById('cookieBanner');
-  const accept   = document.getElementById('cookieAccept');
-  const reject   = document.getElementById('cookieReject');
+  const banner = document.getElementById('cookieBanner');
+  const accept = document.getElementById('cookieAccept');
+  const reject = document.getElementById('cookieReject');
 
   if (banner) {
-    const consent = localStorage.getItem('mg-cookie-consent');
+    // localStorage mit Fallback (funktioniert auch in eingebetteten Previews)
+    let consent = null;
+    try {
+      consent = localStorage.getItem('mg-cookie-consent');
+    } catch (e) {}
+
     if (consent) {
-      banner.classList.add('hidden');
+      banner.style.display = 'none';
     }
 
-    accept?.addEventListener('click', () => {
-      localStorage.setItem('mg-cookie-consent', 'accepted');
+    function hideBanner(value) {
+      // Sofort verstecken — kein Warten auf CSS-Transition
       banner.classList.add('hidden');
-    });
+      setTimeout(() => { banner.style.display = 'none'; }, 350);
+      try {
+        localStorage.setItem('mg-cookie-consent', value);
+      } catch (e) {}
+    }
 
-    reject?.addEventListener('click', () => {
-      localStorage.setItem('mg-cookie-consent', 'rejected');
-      banner.classList.add('hidden');
-    });
+    accept?.addEventListener('click', () => hideBanner('accepted'));
+    reject?.addEventListener('click', () => hideBanner('rejected'));
   }
 
   // ─── NAV SCROLL ───
