@@ -820,4 +820,16 @@ body.menu-open { overflow: hidden; }
   .termin__form { padding: 24px; }
   .cookie-banner__inner { flex-direction: column; align-items: flex-start; }
   .hero__actions { flex-direction: column; }
+
+  /* Buttons dürfen umbrechen statt rauszuragen */
+  .btn {
+    white-space: normal;
+    text-align: center;
+    max-width: 100%;
+    padding: 14px 24px;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+  .hero__actions .btn { width: 100%; justify-content: center; }
+  .leistungen__anfrage .btn--outline { width: 100%; }
 }
