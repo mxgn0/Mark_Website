@@ -8,6 +8,20 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <script>
+    // Cookie-Einwilligung sofort prüfen (vor dem Rendern)
+    (function () {
+      try {
+        if (localStorage.getItem('mg-cookie-consent')) {
+          document.documentElement.classList.add('cookie-consented');
+        }
+      } catch (e) {}
+    })();
+    // iOS: kein automatisches Scrollen beim Laden
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+  </script>
 </head>
 <body>
 
@@ -22,8 +36,8 @@
         <a href="pages/datenschutz.html">Mehr erfahren</a>
       </p>
       <div class="cookie-banner__actions">
-        <button class="btn-cookie btn-cookie--reject" onclick="document.getElementById('cookieBanner').style.display='none';try{localStorage.setItem('mg-cookie-consent','rejected')}catch(e){}">Ablehnen</button>
-        <button class="btn-cookie btn-cookie--accept" onclick="document.getElementById('cookieBanner').style.display='none';try{localStorage.setItem('mg-cookie-consent','accepted')}catch(e){}">Akzeptieren</button>
+        <button class="btn-cookie btn-cookie--reject" onclick="try{localStorage.setItem('mg-cookie-consent','rejected')}catch(e){}document.documentElement.classList.add('cookie-consented')">Ablehnen</button>
+        <button class="btn-cookie btn-cookie--accept" onclick="try{localStorage.setItem('mg-cookie-consent','accepted')}catch(e){}document.documentElement.classList.add('cookie-consented')">Akzeptieren</button>
       </div>
     </div>
   </div>
@@ -40,7 +54,7 @@
       <li><a href="#standort">Standort</a></li>
     </ul>
     <a href="#termin" class="btn btn--nav">Termin buchen</a>
-    <button class="nav__burger" id="navBurger" aria-label="Menü öffnen">
+    <button class="nav__burger" id="navBurger" aria-label="Menü öffnen" onclick="document.getElementById('mobileMenu').classList.toggle('open');document.body.classList.toggle('menu-open')">
       <span></span><span></span><span></span>
     </button>
     <div class="nav__line"></div>
@@ -49,10 +63,10 @@
   <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <ul>
-      <li><a href="#leistungen" class="mobile-link">Leistungen</a></li>
-      <li><a href="#termin" class="mobile-link">Termin</a></li>
-      <li><a href="#kontakt" class="mobile-link">Kontakt</a></li>
-      <li><a href="#standort" class="mobile-link">Standort</a></li>
+      <li><a href="#leistungen" class="mobile-link" onclick="document.getElementById('mobileMenu').classList.remove('open');document.body.classList.remove('menu-open')">Leistungen</a></li>
+      <li><a href="#termin" class="mobile-link" onclick="document.getElementById('mobileMenu').classList.remove('open');document.body.classList.remove('menu-open')">Termin</a></li>
+      <li><a href="#kontakt" class="mobile-link" onclick="document.getElementById('mobileMenu').classList.remove('open');document.body.classList.remove('menu-open')">Kontakt</a></li>
+      <li><a href="#standort" class="mobile-link" onclick="document.getElementById('mobileMenu').classList.remove('open');document.body.classList.remove('menu-open')">Standort</a></li>
     </ul>
   </div>
 
