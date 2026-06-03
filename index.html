@@ -22,8 +22,8 @@
         <a href="pages/datenschutz.html">Mehr erfahren</a>
       </p>
       <div class="cookie-banner__actions">
-        <button class="btn-cookie btn-cookie--reject" id="cookieReject">Ablehnen</button>
-        <button class="btn-cookie btn-cookie--accept" id="cookieAccept">Akzeptieren</button>
+        <button class="btn-cookie btn-cookie--reject" onclick="document.getElementById('cookieBanner').style.display='none';try{localStorage.setItem('mg-cookie-consent','rejected')}catch(e){}">Ablehnen</button>
+        <button class="btn-cookie btn-cookie--accept" onclick="document.getElementById('cookieBanner').style.display='none';try{localStorage.setItem('mg-cookie-consent','accepted')}catch(e){}">Akzeptieren</button>
       </div>
     </div>
   </div>
@@ -79,11 +79,6 @@
           WhatsApp
         </a>
       </div>
-    </div>
-    <!-- Rollbrett Foto -->
-    <div class="hero__portrait">
-      <img src="assets/images/mark-portrait.jpg" alt="Mark in der Werkstatt" />
-      <div class="hero__portrait-label">Mark · Inhaber & Meister</div>
     </div>
   </section>
 
