@@ -1,5 +1,32 @@
+/* ─── AVENIR (lokal eingebunden) ─── */
+@font-face {
+  font-family: 'Avenir';
+  src: url('../fonts/Avenir/Avenir Light/Avenir Light.ttf') format('truetype');
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Avenir';
+  src: url('../fonts/Avenir/Avenir Book/Avenir Book.ttf') format('truetype');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Avenir';
+  src: url('../fonts/Avenir/Avenir Regular/Avenir Regular.ttf') format('truetype');
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Avenir';
+  src: url('../fonts/Avenir/Avenir Heavy/Avenir Heavy.ttf') format('truetype');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Avenir';
+  src: url('../fonts/Avenir/Avenir Black/Avenir Black.ttf') format('truetype');
+  font-weight: 800; font-style: normal; font-display: swap;
+}
+
 /* ===========================
-   MARK GARAGE v2 — style.css
+   WELKLOHS v2 — style.css
    =========================== */
 
 :root {
@@ -14,8 +41,8 @@
   --accent:  #d4410a;
   --wa:      #25D366;
 
-  --font-display: 'Bebas Neue', sans-serif;
-  --font-mono:    'DM Mono', monospace;
+  --font-display: 'Avenir', sans-serif;
+  --font-body:    'Avenir', sans-serif;
   --radius:  4px;
   --transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
@@ -29,7 +56,7 @@ html { scroll-behavior: smooth; font-size: 16px; }
 body {
   background: var(--black);
   color: var(--white);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 14px;
   line-height: 1.7;
   overflow-x: hidden;
@@ -40,8 +67,10 @@ a { color: inherit; text-decoration: none; }
 
 h1, h2, h3 {
   font-family: var(--font-display);
-  letter-spacing: 0.03em;
+  font-weight: 800;
+  letter-spacing: -0.01em;
   line-height: 1.05;
+  text-transform: uppercase;
 }
 
 /* ─── NOISE OVERLAY ─── */
@@ -547,7 +576,7 @@ body.menu-open { overflow: hidden; }
   background: var(--black);
   border: 1px solid var(--border);
   color: var(--white);
-  font-family: var(--font-mono);
+  font-family: var(--font-body);
   font-size: 0.88rem;
   padding: 12px 14px;
   outline: none;
