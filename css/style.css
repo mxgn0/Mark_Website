@@ -339,11 +339,11 @@ body.menu-open { overflow: hidden; }
   overflow-wrap: anywhere;
 }
 .hero__title {
-  font-size: clamp(2.6rem, 13vw, 14rem);
+  font-size: clamp(2.4rem, 12vw, 14rem);
   line-height: 0.9;
   margin-bottom: 28px;
   max-width: 100%;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 .hero__title span { color: var(--accent); }
 .hero__sub {
