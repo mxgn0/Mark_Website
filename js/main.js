@@ -1,5 +1,5 @@
 // ===========================
-// MARK GARAGE — main.js
+// WELKLOHS — main.js
 // (Cookie & Burger laufen inline im HTML — hier nur Extras)
 // ===========================
 
@@ -49,13 +49,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ─── TERMIN FORM ───
+  // Endpoint zu Notion (Cloudflare Worker). Nach dem Deploy hier die echte URL eintragen.
+  const NOTION_ENDPOINT = 'https://DEIN-WORKER.welklohs.workers.dev';
+
   const form = document.getElementById('terminForm');
   if (form) {
     const datumInput = document.getElementById('datum');
     if (datumInput) {
       datumInput.min = new Date().toISOString().split('T')[0];
     }
+
     form.addEventListener('submit', () => {
+      // Häkchen-Status IMMER als Ja/Nein festschreiben
+      const erst = document.getElementById('chkErstinspektion');
+      const ds   = document.getElementById('chkDatenschutz');
+      const hErst = document.getElementById('hidErstinspektion');
+      const hDs   = document.getElementById('hidDatenschutz');
+      const hZeit = document.getElementById('hidGebuchtAm');
+      if (hErst && erst) hErst.value = erst.checked ? 'Ja' : 'Nein';
+      if (hDs && ds)     hDs.value   = ds.checked ? 'Ja' : 'Nein';
+      if (hZeit)         hZeit.value = new Date().toLocaleString('de-DE');
+
+      // Parallel an Notion senden (nur wenn echte URL hinterlegt ist).
+      // keepalive: Request läuft weiter, auch wenn die Seite danach zu Formspree wechselt.
+      if (NOTION_ENDPOINT && !NOTION_ENDPOINT.includes('DEIN-')) {
+        try {
+          const data = Object.fromEntries(new FormData(form).entries());
+          fetch(NOTION_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            keepalive: true
+          }).catch(() => {});
+        } catch (err) { /* still ok: Formspree-Mail läuft weiter */ }
+      }
+
       const btn = form.querySelector('button[type="submit"]');
       if (btn) { btn.textContent = 'Wird gesendet...'; btn.disabled = true; }
     });
