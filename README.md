@@ -1,6 +1,6 @@
-# Mark Garage — Website
+# Welklohs — Website
 
-Werkstatt & Tuning Website für Mark Garage.
+Werkstatt & Tuning Website für Welklohs.
 
 ## Struktur
 
