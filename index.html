@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WELKLOHS — Meisterbetrieb Leipzig · Paunsdorf</title>
+  <title>WELKLOHS — Meisterbetrieb Leipzig . Paunsdorf</title>
   <meta name="description" content="WELKLOHS – Der neue Meisterbetrieb in Leipzig . Paunsdorf. Tuning, Reparatur, Inspektion. Jetzt kostenfreie Erstinspektion sichern." />
   <link rel="stylesheet" href="css/style.css" />
   <script>
@@ -78,10 +78,10 @@
       <div class="hero__overlay"></div>
     </div>
     <div class="hero__content">
-      <p class="hero__label">// Meisterbetrieb · Leipzig · Paunsdorf</p>
-      <h1 class="hero__title">WELKLOHS<span></span></h1>
+      <p class="hero__label">// Meisterbetrieb · Leipzig . Paunsdorf</p>
+      <h1 class="hero__title">WELKLOHS<br><span></span></h1>
       <p class="hero__sub">
-        Der neue Meisterbetrieb in Leipzig · Paunsdorf.<br>
+        Der neue Meisterbetrieb in Leipzig . Paunsdorf.<br>
         Ehrliche Arbeit. Klare Preise. Kein Bullshit.
       </p>
       <div class="hero__actions">
@@ -188,7 +188,7 @@
           <p>Trag dich ein, wir melden uns zur Bestätigung innerhalb von 24h.</p>
           <p>Alternativ auch direkt:</p>
           <div class="kontakt-direkt">
-            <a href="tel:+49 187 420 67" class="kontakt-pill">
+            <a href="tel:+4915172896449" class="kontakt-pill">
               📞 Anrufen
             </a>
             <a href="mailto:info@welklohs.de" class="kontakt-pill">
@@ -215,7 +215,7 @@
           <div class="form-row">
             <div class="form-group">
               <label for="telefon">Telefon *</label>
-              <input type="tel" id="telefon" name="telefon" required placeholder="+4915172896449" />
+              <input type="tel" id="telefon" name="telefon" required placeholder="+49 187 420 67" />
             </div>
             <div class="form-group">
               <label for="email">E-Mail</label>
@@ -252,16 +252,23 @@
           </div>
           <div class="form-group form-group--check">
             <label class="checkbox-label">
-              <input type="checkbox" name="erstinspektion" value="ja" />
+              <input type="checkbox" id="chkErstinspektion" />
               <span>Ich bin Neukunde und möchte die kostenfreie Erstinspektion nutzen</span>
             </label>
           </div>
           <div class="form-group form-group--check">
             <label class="checkbox-label">
-              <input type="checkbox" name="datenschutz" required />
+              <input type="checkbox" id="chkDatenschutz" required />
               <span>Ich habe die <a href="pages/datenschutz.html">Datenschutzerklärung</a> gelesen und stimme zu *</span>
             </label>
           </div>
+
+          <!-- Werden per JS immer mit Ja/Nein befüllt, damit der Status im Datensatz steht -->
+          <input type="hidden" name="Neukunde_Erstinspektion" id="hidErstinspektion" value="Nein" />
+          <input type="hidden" name="Datenschutz_zugestimmt" id="hidDatenschutz" value="Nein" />
+          <!-- Zeitstempel der Buchung -->
+          <input type="hidden" name="Gebucht_am" id="hidGebuchtAm" value="" />
+
           <button type="submit" class="btn btn--full">Terminanfrage absenden</button>
           <p class="form-hint">* Pflichtfelder. Wir melden uns innerhalb von 24h zur Bestätigung.</p>
         </form>
