@@ -60,7 +60,7 @@
 }
 
 /* DARK — Weiß auf Schwarz (echte Invertierung) */
-[data-theme="dark"] {
+html[data-theme="dark"] {
   --black:  #0a0a0a;
   --dark:   #131313;
   --panel:  #181818;
