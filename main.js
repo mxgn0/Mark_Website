@@ -1,37 +1,12 @@
 // ===========================
-// MARK GARAGE — main.js
+// WELKLOHS — main.js
+// (Cookie & Burger laufen inline im HTML — hier nur Extras)
 // ===========================
 
+// iOS: beim Laden immer oben starten
+window.scrollTo(0, 0);
+
 document.addEventListener('DOMContentLoaded', () => {
-
-  // ─── COOKIE BANNER ───
-  const banner = document.getElementById('cookieBanner');
-  const accept = document.getElementById('cookieAccept');
-  const reject = document.getElementById('cookieReject');
-
-  if (banner) {
-    // localStorage mit Fallback (funktioniert auch in eingebetteten Previews)
-    let consent = null;
-    try {
-      consent = localStorage.getItem('mg-cookie-consent');
-    } catch (e) {}
-
-    if (consent) {
-      banner.style.display = 'none';
-    }
-
-    function hideBanner(value) {
-      // Sofort verstecken — kein Warten auf CSS-Transition
-      banner.classList.add('hidden');
-      setTimeout(() => { banner.style.display = 'none'; }, 350);
-      try {
-        localStorage.setItem('mg-cookie-consent', value);
-      } catch (e) {}
-    }
-
-    accept?.addEventListener('click', () => hideBanner('accepted'));
-    reject?.addEventListener('click', () => hideBanner('rejected'));
-  }
 
   // ─── NAV SCROLL ───
   const nav = document.getElementById('mainNav');
@@ -41,69 +16,89 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // ─── MOBILE MENU ───
-  const burger     = document.getElementById('navBurger');
-  const mobileMenu = document.getElementById('mobileMenu');
-  const mobileLinks = document.querySelectorAll('.mobile-link');
-
-  burger?.addEventListener('click', () => {
-    mobileMenu.classList.toggle('open');
-    document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
-  });
-
-  mobileLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu.classList.remove('open');
-      document.body.style.overflow = '';
-    });
-  });
-
   // ─── HERO IMAGE LOAD ───
   const hero = document.querySelector('.hero');
   if (hero) {
-    setTimeout(() => hero.classList.add('loaded'), 100);
+    requestAnimationFrame(() => hero.classList.add('loaded'));
   }
 
   // ─── SCROLL FADE-IN ───
   const fadeEls = document.querySelectorAll(
-    '.leistung-card, .stat, .kontakt-card, .standort__item, .termin__badge'
+    '.leistung-card, .stat, .kontakt-card, .standort__item'
   );
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }, i * 60);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }, i * 60);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
 
-  fadeEls.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(el);
-  });
+    fadeEls.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      observer.observe(el);
+    });
+  }
 
   // ─── TERMIN FORM ───
+  // Endpoint zu Notion (Cloudflare Worker). Nach dem Deploy hier die echte URL eintragen.
+  const NOTION_ENDPOINT = 'https://DEIN-WORKER.welklohs.workers.dev';
+
   const form = document.getElementById('terminForm');
   if (form) {
-    // Min-Date: heute
     const datumInput = document.getElementById('datum');
     if (datumInput) {
-      const today = new Date().toISOString().split('T')[0];
-      datumInput.min = today;
+      datumInput.min = new Date().toISOString().split('T')[0];
     }
 
-    form.addEventListener('submit', async (e) => {
-      const submitBtn = form.querySelector('button[type="submit"]');
-      submitBtn.textContent = 'Wird gesendet...';
-      submitBtn.disabled = true;
-      // Formspree übernimmt den Rest
+    form.addEventListener('submit', () => {
+      // Häkchen-Status IMMER als Ja/Nein festschreiben
+      const erst = document.getElementById('chkErstinspektion');
+      const ds   = document.getElementById('chkDatenschutz');
+      const hErst = document.getElementById('hidErstinspektion');
+      const hDs   = document.getElementById('hidDatenschutz');
+      const hZeit = document.getElementById('hidGebuchtAm');
+      if (hErst && erst) hErst.value = erst.checked ? 'Ja' : 'Nein';
+      if (hDs && ds)     hDs.value   = ds.checked ? 'Ja' : 'Nein';
+      if (hZeit)         hZeit.value = new Date().toLocaleString('de-DE');
+
+      // Parallel an Notion senden (nur wenn echte URL hinterlegt ist).
+      // keepalive: Request läuft weiter, auch wenn die Seite danach zu Formspree wechselt.
+      if (NOTION_ENDPOINT && !NOTION_ENDPOINT.includes('DEIN-')) {
+        try {
+          const data = Object.fromEntries(new FormData(form).entries());
+          fetch(NOTION_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            keepalive: true
+          }).catch(() => {});
+        } catch (err) { /* still ok: Formspree-Mail läuft weiter */ }
+      }
+
+      const btn = form.querySelector('button[type="submit"]');
+      if (btn) { btn.textContent = 'Wird gesendet...'; btn.disabled = true; }
     });
   }
 
 });
+
+  // ─── THEME TOGGLE (Light/Dark, mit Merker) ───
+  (function () {
+    const root = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('welklohs-theme', next); } catch (e) {}
+    });
+  })();
