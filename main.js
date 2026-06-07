@@ -90,15 +90,3 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
-
-  // ─── THEME TOGGLE (Light/Dark, mit Merker) ───
-  (function () {
-    const root = document.documentElement;
-    const btn = document.getElementById('themeToggle');
-    if (!btn) return;
-    btn.addEventListener('click', () => {
-      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      try { localStorage.setItem('welklohs-theme', next); } catch (e) {}
-    });
-  })();
