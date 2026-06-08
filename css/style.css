@@ -871,7 +871,10 @@ body.menu-open { overflow: hidden; }
 @media (max-width: 900px) {
   .nav__links { display: none; }
   .btn--nav { display: none; }
-  .nav__burger { display: flex; }
+  .nav__burger { display: flex; flex: 0 0 auto; }
+  /* enger packen, damit der Burger nicht über den Rand rutscht */
+  .nav { gap: 14px; }
+  .theme-toggle { margin-left: 0; }
 
   .hero__portrait { display: none; }
 
