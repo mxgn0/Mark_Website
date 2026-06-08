@@ -926,7 +926,8 @@ body.menu-open { overflow: hidden; }
 .hero .btn:hover{ background: transparent; color: #f4f4f4; border-color: #f4f4f4; }
 .hero .btn--wa, .hero .btn--outline{ background: transparent; color: #f4f4f4; border-color: rgba(255,255,255,0.15); }
 .hero .btn--wa:hover, .hero .btn--outline:hover{ background: rgba(255,255,255,0.08); color: #f4f4f4; border-color: #f4f4f4; }
-.hero__label{ color: var(--accent); }
+.hero__label{ color: #f4f4f4; }
+.hero__title span{ color: #f4f4f4; }
 .hero__sub{ color: rgba(244,244,244,0.6); }
 .hero__content{ max-width: 820px; }
 
