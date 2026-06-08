@@ -920,7 +920,14 @@ body.menu-open { overflow: hidden; }
 .btn-cookie--accept{ background: var(--white); color: var(--black); }
 .btn-cookie--accept:hover{ background: var(--black); color: var(--white); border: 1px solid var(--white); }
 
-/* HERO: Foto-Hintergrund */
+/* HERO: Foto-Hintergrund – Text immer hell (Overlay ist dunkel) */
+.hero{ color: #f4f4f4; }
+.hero .btn{ background: #f4f4f4; color: #0a0a0a; border-color: #f4f4f4; }
+.hero .btn:hover{ background: transparent; color: #f4f4f4; border-color: #f4f4f4; }
+.hero .btn--wa, .hero .btn--outline{ background: transparent; color: #f4f4f4; border-color: rgba(255,255,255,0.15); }
+.hero .btn--wa:hover, .hero .btn--outline:hover{ background: rgba(255,255,255,0.08); color: #f4f4f4; border-color: #f4f4f4; }
+.hero__label{ color: var(--accent); }
+.hero__sub{ color: rgba(244,244,244,0.6); }
 .hero__content{ max-width: 820px; }
 
 /* THEME-TOGGLE */
