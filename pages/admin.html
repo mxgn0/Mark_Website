@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WELKLOHS – Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0a; --panel: #141414; --border: #222; --white: #f4f4f4;
+      --muted: #888; --green: #22c55e; --red: #ef4444; --blue: #3b82f6; --yellow: #eab308;
+      --font: 'Avenir', -apple-system, sans-serif;
+    }
+    body { background: var(--bg); color: var(--white); font-family: var(--font); padding: 24px; }
+    h1 { font-size: 1.4rem; margin-bottom: 24px; font-weight: 600; letter-spacing: 0.04em; }
+    .top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .top h1 { margin: 0; }
+    button { cursor: pointer; font-family: var(--font); }
+
+    /* LOGIN */
+    .login { max-width: 340px; margin: 120px auto; text-align: center; }
+    .login h1 { margin-bottom: 32px; }
+    .login input {
+      width: 100%; padding: 12px 16px; background: var(--panel); border: 1px solid var(--border);
+      color: var(--white); font-size: 0.9rem; margin-bottom: 16px; outline: none;
+    }
+    .login input:focus { border-color: var(--white); }
+    .login .err { color: var(--red); font-size: 0.8rem; margin-bottom: 12px; }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-block; padding: 10px 20px; font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; border: 1px solid var(--border);
+      background: var(--white); color: var(--bg); transition: all .2s;
+    }
+    .btn:hover { background: var(--bg); color: var(--white); border-color: var(--white); }
+    .btn--sm { padding: 6px 12px; font-size: 0.65rem; }
+    .btn--red { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn--red:hover { background: transparent; color: var(--red); }
+    .btn--outline { background: transparent; color: var(--white); }
+    .btn--outline:hover { background: var(--white); color: var(--bg); }
+    .btn--logout { position: absolute; top: 24px; right: 24px; }
+
+    /* CALENDAR */
+    .cal-head { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+    .cal-head button { background: none; border: 1px solid var(--border); color: var(--white); width: 36px; height: 36px; font-size: 1.1rem; }
+    .cal-head button:hover { border-color: var(--white); }
+    .cal-head span { font-size: 1rem; font-weight: 600; min-width: 180px; text-align: center; }
+
+    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+    .weekdays span { text-align: center; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted); padding: 6px 0; }
+
+    .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 32px; }
+    .day {
+      aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 0.85rem; border: 1px solid var(--border); background: var(--panel);
+      transition: all .15s; position: relative;
+    }
+    .day:hover { border-color: var(--white); }
+    .day--empty { border: none; background: transparent; pointer-events: none; }
+    .day--past { opacity: 0.25; pointer-events: none; }
+    .day--off { opacity: 0.15; pointer-events: none; }
+    .day--sel { border-color: var(--white); background: var(--border); }
+    .day .dot {
+      width: 6px; height: 6px; border-radius: 50%; margin-top: 4px;
+    }
+    .dot--free { background: var(--green); }
+    .dot--partial { background: var(--yellow); }
+    .dot--blocked { background: var(--red); }
+    .dot--booked { background: var(--blue); }
+
+    /* DAY DETAIL */
+    .detail { background: var(--panel); border: 1px solid var(--border); padding: 24px; margin-bottom: 24px; }
+    .detail h2 { font-size: 1rem; margin-bottom: 16px; font-weight: 600; }
+    .detail-actions { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+    .slot {
+      padding: 12px; border: 1px solid var(--border); background: var(--bg); font-size: 0.8rem;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .slot__time { font-weight: 700; font-size: 0.9rem; }
+    .slot__status { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; }
+    .slot__status--free { color: var(--green); }
+    .slot__status--blocked { color: var(--red); }
+    .slot__status--booked { color: var(--blue); }
+    .slot__info { font-size: 0.75rem; color: var(--muted); line-height: 1.5; }
+    .slot__actions { margin-top: 6px; }
+
+    /* LEGEND */
+    .legend { display: flex; gap: 20px; margin-bottom: 24px; flex-wrap: wrap; }
+    .legend span { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; color: var(--muted); }
+    .legend .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    @media (max-width: 600px) {
+      body { padding: 16px; }
+      .day { font-size: 0.75rem; }
+      .slots-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const WORKER_URL = 'https://DEIN-WORKER.workers.dev'; // ← anpassen!
+let TOKEN = localStorage.getItem('welklohs_token') || '';
+let MONTH, YEAR, DATA, SEL_DATE;
+
+const $ = s => document.querySelector(s);
+const app = () => $('#app');
+
+const MONTHS = ['Januar','Februar','März','April','Mai','Juni',
+                'Juli','August','September','Oktober','November','Dezember'];
+const DAYS   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+const SLOTS  = [];
+for (let h = 8; h < 17; h++) SLOTS.push(`${String(h).padStart(2,'0')}:00`);
+
+/* ---- API ---- */
+async function api(path, opts = {}) {
+  const r = await fetch(`${WORKER_URL}${path}`, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${TOKEN}`, ...opts.headers }
+  });
+  const j = await r.json();
+  if (r.status === 401) { TOKEN = ''; localStorage.removeItem('welklohs_token'); showLogin('Sitzung abgelaufen'); return null; }
+  return j;
+}
+
+/* ---- LOGIN ---- */
+function showLogin(err = '') {
+  app().innerHTML = `
+    <div class="login">
+      <h1>WELKLOHS Admin</h1>
+      ${err ? `<p class="err">${err}</p>` : ''}
+      <input type="password" id="pw" placeholder="Passwort" autofocus>
+      <button class="btn" id="loginBtn">Anmelden</button>
+    </div>`;
+  const go = async () => {
+    const pw = $('#pw').value;
+    if (!pw) return;
+    try {
+      const r = await fetch(`${WORKER_URL}/api/admin/auth`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pw })
+      });
+      const j = await r.json();
+      if (j.token) { TOKEN = j.token; localStorage.setItem('welklohs_token', TOKEN); showDashboard(); }
+      else showLogin(j.error || 'Fehler');
+    } catch { showLogin('Verbindungsfehler'); }
+  };
+  $('#loginBtn').addEventListener('click', go);
+  $('#pw').addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+}
+
+/* ---- DASHBOARD ---- */
+async function showDashboard() {
+  const now = new Date();
+  MONTH = MONTH ?? now.getMonth();
+  YEAR  = YEAR  ?? now.getFullYear();
+  SEL_DATE = null;
+
+  app().innerHTML = `
+    <button class="btn btn--sm btn--outline btn--logout" id="logout">Abmelden</button>
+    <h1>WELKLOHS Admin</h1>
+    <div class="legend">
+      <span><span class="dot dot--free"></span> Frei</span>
+      <span><span class="dot dot--partial"></span> Teilweise</span>
+      <span><span class="dot dot--booked"></span> Buchungen</span>
+      <span><span class="dot dot--blocked"></span> Gesperrt</span>
+    </div>
+    <div class="cal-head">
+      <button id="prev">‹</button>
+      <span id="monthLabel"></span>
+      <button id="next">›</button>
+    </div>
+    <div class="weekdays"><span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span></div>
+    <div class="grid" id="grid"></div>
+    <div id="detail"></div>`;
+
+  $('#logout').addEventListener('click', () => { TOKEN = ''; localStorage.removeItem('welklohs_token'); showLogin(); });
+  $('#prev').addEventListener('click', () => nav(-1));
+  $('#next').addEventListener('click', () => nav(1));
+
+  await loadMonth();
+}
+
+function nav(d) { MONTH += d; if (MONTH > 11) { MONTH = 0; YEAR++; } if (MONTH < 0) { MONTH = 11; YEAR--; } SEL_DATE = null; loadMonth(); }
+
+async function loadMonth() {
+  const mm = `${YEAR}-${String(MONTH + 1).padStart(2, '0')}`;
+  $('#monthLabel').textContent = `${MONTHS[MONTH]} ${YEAR}`;
+  $('#grid').innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted)">Laden …</p>';
+  $('#detail').innerHTML = '';
+
+  DATA = await api(`/api/admin/data?month=${mm}`);
+  if (!DATA) return;
+  renderGrid();
+}
+
+function renderGrid() {
+  const grid = $('#grid');
+  grid.innerHTML = '';
+  const mm = `${YEAR}-${String(MONTH + 1).padStart(2, '0')}`;
+  const first = new Date(YEAR, MONTH, 1).getDay();
+  const offset = first === 0 ? 6 : first - 1;
+  const days = new Date(YEAR, MONTH + 1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  for (let i = 0; i < offset; i++) { const s = document.createElement('div'); s.className = 'day day--empty'; grid.appendChild(s); }
+
+  for (let n = 1; n <= days; n++) {
+    const ds = `${mm}-${String(n).padStart(2,'0')}`;
+    const dt = new Date(YEAR, MONTH, n);
+    const dow = dt.getDay();
+    const past = dt < today;
+    const work = [1,2,3,4,5].includes(dow);
+
+    const bl = DATA.blocked[ds] || [];
+    const bk = DATA.booked[ds] || [];
+    const allBlocked = bl.includes('all');
+    const blockedCount = allBlocked ? SLOTS.length : bl.length;
+    const bookedCount = bk.length;
+    const freeCount = SLOTS.length - blockedCount - bookedCount;
+
+    const div = document.createElement('div');
+    div.className = 'day';
+    div.innerHTML = `<span>${n}</span>`;
+
+    if (past) div.classList.add('day--past');
+    else if (!work) div.classList.add('day--off');
+    else {
+      let dot = '';
+      if (allBlocked)            dot = '<span class="dot dot--blocked"></span>';
+      else if (bookedCount > 0 && freeCount > 0)  dot = '<span class="dot dot--partial"></span>';
+      else if (bookedCount > 0)  dot = '<span class="dot dot--booked"></span>';
+      else if (blockedCount > 0) dot = '<span class="dot dot--partial"></span>';
+      else                       dot = '<span class="dot dot--free"></span>';
+      div.innerHTML += dot;
+
+      if (ds === SEL_DATE) div.classList.add('day--sel');
+      div.addEventListener('click', () => { SEL_DATE = ds; renderGrid(); renderDetail(ds); });
+    }
+    grid.appendChild(div);
+  }
+}
+
+/* ---- DAY DETAIL ---- */
+function renderDetail(ds) {
+  const detail = $('#detail');
+  const [y, m, d] = ds.split('-');
+  const dn = DAYS[new Date(+y, m-1, +d).getDay()];
+  const bl = DATA.blocked[ds] || [];
+  const bk = DATA.booked[ds] || [];
+  const allBlocked = bl.includes('all');
+
+  detail.innerHTML = `
+    <div class="detail">
+      <h2>${dn}, ${d}.${m}.${y}</h2>
+      <div class="detail-actions">
+        <button class="btn btn--sm ${allBlocked ? 'btn--outline' : 'btn--red'}" id="toggleAll">
+          ${allBlocked ? '✓ Ganzen Tag freigeben' : '✕ Ganzen Tag sperren'}
+        </button>
+      </div>
+      <div class="slots-grid" id="slotsGrid"></div>
+    </div>`;
+
+  $('#toggleAll').addEventListener('click', async () => {
+    if (allBlocked) await api('/api/admin/unblock', { method: 'POST', body: JSON.stringify({ date: ds, allDay: true }) });
+    else await api('/api/admin/block', { method: 'POST', body: JSON.stringify({ date: ds, allDay: true }) });
+    await loadMonth(); renderDetail(ds);
+  });
+
+  const grid = $('#slotsGrid');
+
+  SLOTS.forEach(time => {
+    const isBlocked = allBlocked || bl.includes(time);
+    const booking = bk.find(b => b.time === time);
+
+    const div = document.createElement('div');
+    div.className = 'slot';
+
+    if (booking) {
+      div.innerHTML = `
+        <span class="slot__time">${time} Uhr</span>
+        <span class="slot__status slot__status--booked">Gebucht</span>
+        <div class="slot__info">
+          ${booking.name}<br>
+          ${booking.phone}<br>
+          ${booking.vehicle}
+          ${booking.notes ? '<br>' + booking.notes : ''}
+          ${booking.newCustomer ? '<br><strong>★ Neukunde</strong>' : ''}
+        </div>
+        <div class="slot__actions">
+          <button class="btn btn--sm btn--red" data-cancel="${time}">Stornieren</button>
+        </div>`;
+    } else if (isBlocked) {
+      div.innerHTML = `
+        <span class="slot__time">${time} Uhr</span>
+        <span class="slot__status slot__status--blocked">Gesperrt</span>
+        <div class="slot__actions">
+          <button class="btn btn--sm btn--outline" data-unblock="${time}">Freigeben</button>
+        </div>`;
+    } else {
+      div.innerHTML = `
+        <span class="slot__time">${time} Uhr</span>
+        <span class="slot__status slot__status--free">Frei</span>
+        <div class="slot__actions">
+          <button class="btn btn--sm btn--outline" data-block="${time}">Sperren</button>
+        </div>`;
+    }
+    grid.appendChild(div);
+  });
+
+  // Events
+  grid.querySelectorAll('[data-block]').forEach(b =>
+    b.addEventListener('click', async () => {
+      await api('/api/admin/block', { method: 'POST', body: JSON.stringify({ date: ds, times: [b.dataset.block] }) });
+      await loadMonth(); renderDetail(ds);
+    }));
+  grid.querySelectorAll('[data-unblock]').forEach(b =>
+    b.addEventListener('click', async () => {
+      await api('/api/admin/unblock', { method: 'POST', body: JSON.stringify({ date: ds, times: [b.dataset.unblock] }) });
+      await loadMonth(); renderDetail(ds);
+    }));
+  grid.querySelectorAll('[data-cancel]').forEach(b =>
+    b.addEventListener('click', async () => {
+      if (!confirm('Buchung wirklich stornieren?')) return;
+      await api('/api/admin/cancel', { method: 'POST', body: JSON.stringify({ date: ds, time: b.dataset.cancel }) });
+      await loadMonth(); renderDetail(ds);
+    }));
+}
+
+/* ---- INIT ---- */
+TOKEN ? showDashboard() : showLogin();
+</script>
+</body>
+</html>
