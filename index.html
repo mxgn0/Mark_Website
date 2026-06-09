@@ -234,77 +234,10 @@
           </div>
         </div>
 
-        <form class="termin__form" id="terminForm" action="https://formspree.io/f/[FORMSPREE-ID]" method="POST">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="vorname">Vorname *</label>
-              <input type="text" id="vorname" name="vorname" required placeholder="Max" />
-            </div>
-            <div class="form-group">
-              <label for="nachname">Nachname *</label>
-              <input type="text" id="nachname" name="nachname" required placeholder="Mustermann" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="telefon">Telefon *</label>
-              <input type="tel" id="telefon" name="telefon" required placeholder="+49 187 420 67" />
-            </div>
-            <div class="form-group">
-              <label for="email">E-Mail</label>
-              <input type="email" id="email" name="email" placeholder="deine@mail.de" />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="fahrzeug">Fahrzeug *</label>
-            <input type="text" id="fahrzeug" name="fahrzeug" required placeholder="z.B. VW Golf 7 GTI, Bj. 2018" />
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="datum">Wunschdatum *</label>
-              <input type="date" id="datum" name="datum" required />
-            </div>
-            <div class="form-group">
-              <label for="uhrzeit">Uhrzeit</label>
-              <select id="uhrzeit" name="uhrzeit">
-                <option value="">Egal / nach Absprache</option>
-                <option value="09:00">09:00 Uhr</option>
-                <option value="10:00">10:00 Uhr</option>
-                <option value="11:00">11:00 Uhr</option>
-                <option value="12:00">12:00 Uhr</option>
-                <option value="13:00">13:00 Uhr</option>
-                <option value="14:00">14:00 Uhr</option>
-                <option value="15:00">15:00 Uhr</option>
-                <option value="16:00">16:00 Uhr</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="anliegen">Anliegen</label>
-            <textarea id="anliegen" name="anliegen" placeholder="Was soll gemacht / angeschaut werden?"></textarea>
-          </div>
-          <div class="form-group form-group--check">
-            <label class="checkbox-label">
-              <input type="checkbox" id="chkErstinspektion" />
-              <span>Ich bin Neukunde und möchte die kostenfreie Erstinspektion nutzen</span>
-            </label>
-          </div>
-          <div class="form-group form-group--check">
-            <label class="checkbox-label">
-              <input type="checkbox" id="chkDatenschutz" required />
-              <span>Ich habe die <a href="pages/datenschutz.html">Datenschutzerklärung</a> gelesen und stimme zu *</span>
-            </label>
-          </div>
-
-          <!-- Werden per JS immer mit Ja/Nein befüllt, damit der Status im Datensatz steht -->
-          <input type="hidden" name="Neukunde_Erstinspektion" id="hidErstinspektion" value="Nein" />
-          <input type="hidden" name="Datenschutz_zugestimmt" id="hidDatenschutz" value="Nein" />
-          <!-- Zeitstempel der Buchung -->
-          <input type="hidden" name="Gebucht_am" id="hidGebuchtAm" value="" />
-
-          <button type="submit" class="btn btn--full">Terminanfrage absenden</button>
-          <p class="form-hint">* Pflichtfelder. Wir melden uns innerhalb von 24h zur Bestätigung.</p>
-        </form>
+        <!-- Buchungskalender -->
+        <div class="termin__cal">
+          <div id="cal-booking"></div>
+        </div>
 
       </div>
     </div>
@@ -443,5 +376,6 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="js/calendar.js"></script>
 </body>
 </html>
