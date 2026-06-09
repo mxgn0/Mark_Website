@@ -583,6 +583,70 @@ body.menu-open { overflow: hidden; }
   border: 1px solid var(--border);
   padding: 40px;
 }
+.termin__cal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 32px;
+  overflow: hidden;
+}
+
+/* ---- Kalender Widget ---- */
+.cal__head { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.cal__arrow {
+  background: none; border: 1px solid var(--border); color: var(--white);
+  width: 36px; height: 36px; font-size: 1.2rem; cursor: pointer; transition: border-color .2s;
+}
+.cal__arrow:hover { border-color: var(--white); }
+.cal__title { font-size: 0.9rem; font-weight: 700; letter-spacing: 0.06em; min-width: 160px; text-align: center; }
+
+.cal__weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px;
+}
+.cal__weekdays span {
+  text-align: center; font-size: 0.55rem; text-transform: uppercase;
+  letter-spacing: 0.15em; color: var(--muted); padding: 6px 0;
+}
+
+.cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; }
+.cal__day {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-size: 0.82rem; font-weight: 600; border: 1px solid var(--border);
+  background: var(--panel); color: var(--white); cursor: default; transition: all .15s;
+}
+.cal__day--empty { border: none; background: transparent; }
+.cal__day--past  { opacity: 0.2; }
+.cal__day--off   { opacity: 0.12; }
+.cal__day--full  { opacity: 0.25; color: var(--muted); }
+.cal__day--free  { cursor: pointer; border-color: rgba(255,255,255,0.08); }
+.cal__day--free:hover { border-color: var(--white); background: var(--border); }
+.cal__day--sel   { border-color: var(--white); background: var(--border); }
+.cal__loading, .cal__error { text-align: center; color: var(--muted); font-size: 0.8rem; padding: 40px 0; grid-column: 1 / -1; }
+
+.cal__slots-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em;
+  color: var(--muted); margin-bottom: 12px;
+}
+.cal__slots-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.cal__slot {
+  padding: 8px 16px; font-size: 0.78rem; font-weight: 600; font-family: var(--font-display);
+  background: var(--bg); border: 1px solid var(--border); color: var(--white);
+  cursor: pointer; transition: all .15s;
+}
+.cal__slot:hover { border-color: var(--white); }
+.cal__slot--sel  { border-color: var(--white); background: var(--border); }
+
+.cal__form-label {
+  font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; margin-bottom: 20px; color: var(--accent);
+}
+
+.cal__msg { margin-top: 12px; font-size: 0.8rem; }
+.cal__msg--err { color: #ef4444; }
+
+.cal__ok { text-align: center; padding: 40px 20px; }
+.cal__ok-icon { font-size: 2.4rem; display: block; margin-bottom: 12px; color: #22c55e; }
+.cal__ok-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.cal__ok p { color: var(--muted); font-size: 0.85rem; }
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -891,6 +955,10 @@ body.menu-open { overflow: hidden; }
 
 @media (max-width: 600px) {
   .termin__form { padding: 24px; }
+  .termin__cal { padding: 20px; }
+  .cal__day { font-size: 0.72rem; }
+  .cal__slots-grid { gap: 6px; }
+  .cal__slot { padding: 7px 12px; font-size: 0.72rem; }
   .cookie-banner__inner { flex-direction: column; align-items: flex-start; }
   .hero__actions { flex-direction: column; }
 
