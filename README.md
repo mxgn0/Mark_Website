@@ -30,5 +30,5 @@ WELKLOHS_Website/
 Die Site ist dann erreichbar unter:  
 https://mxgn0.github.io/Mark_Website/
 
-Admin Kalender
+Admin Kalender:
 https://mxgn0.github.io/Mark_Website/pages/admin.html
