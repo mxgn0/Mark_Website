@@ -5,25 +5,25 @@ Werkstatt & Tuning Website für Welklohs.
 ## Struktur
 
 ```
-mark-garage/
+WELKLOHS_Website/
 ├── index.html              # Startseite
 ├── css/
-│   └── style.css           # Styling (dark, industrial)
+│   └── style.css           # Styling (Dark/Light Theme)
 ├── js/
-│   └── main.js             # Animationen, Scroll-Effekte
+│   ├── main.js             # Navigation, Theme-Toggle, Scroll
+│   └── calendar.js         # Buchungskalender (→ Cloudflare Worker)
 ├── pages/
+│   ├── admin.html          # Admin-Panel (Buchungen, Slots sperren)
 │   ├── impressum.html
 │   ├── datenschutz.html
-│   └── kontakt.html
-└── assets/
-    ├── images/             # Fotos der Projekte, Werkstatt etc.
-    │   ├── projekt-01.jpg
-    │   ├── projekt-02.jpg
-    │   ├── projekt-03.jpg
-    │   ├── projekt-04.jpg
-    │   └── video-poster.jpg
-    └── videos/
-        └── showreel.mp4    # Optionales Video (autoplay, muted)
+│   └── Agb.html
+├── assets/
+│   ├── images/
+│   │   └── hero.jpg
+│   └── videos/
+├── fonts/
+│   └── Avenir/             # Lokale Schriftarten (Light–Black)
+└── README.md
 ```
 
 
