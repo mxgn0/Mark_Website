@@ -74,10 +74,10 @@
     .detail { background: var(--panel); border: 1px solid var(--border); padding: 24px; margin-bottom: 24px; }
     .detail h2 { font-size: 1rem; margin-bottom: 16px; font-weight: 600; }
     .detail-actions { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+    .slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 8px; }
     .slot {
-      padding: 12px; border: 1px solid var(--border); background: var(--bg); font-size: 0.8rem;
-      display: flex; flex-direction: column; gap: 4px;
+      padding: 16px; border: 1px solid var(--border); background: var(--bg); font-size: 0.8rem;
+      display: flex; flex-direction: column; gap: 4px; min-width: 0;
     }
     .slot__time { font-weight: 700; font-size: 0.9rem; }
     .slot__status { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; }
@@ -89,8 +89,8 @@
     .slot__confirm { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
     .slot__confirm-row { display: flex; gap: 8px; margin-bottom: 8px; }
     .slot__confirm-row input {
-      flex: 1; padding: 6px 10px; background: var(--bg); border: 1px solid var(--border);
-      color: var(--white); font-family: var(--font); font-size: 0.75rem;
+      flex: 1; min-width: 0; padding: 8px 10px; background: var(--bg); border: 1px solid var(--border);
+      color: var(--white); font-family: var(--font); font-size: 0.78rem;
     }
     .slot__confirm-row input:focus { border-color: var(--white); outline: none; }
     .slot__send-btns { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -110,6 +110,7 @@
       body { padding: 16px; }
       .day { font-size: 0.75rem; }
       .slots-grid { grid-template-columns: 1fr; }
+      .slot__confirm-row { flex-direction: column; }
     }
   </style>
 </head>
