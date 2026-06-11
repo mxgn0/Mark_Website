@@ -2,7 +2,7 @@
    WELKLOHS – Buchungskalender
    ============================================================ */
 
-const WORKER_URL = 'https://bookings.mxgn-studio.workers.dev'; // ← anpassen!
+const WORKER_URL = 'https://DEIN-WORKER.workers.dev'; // ← anpassen!
 
 const CalendarWidget = {
   el: null,
@@ -170,6 +170,13 @@ const CalendarWidget = {
         <input type="text" id="bkF" required placeholder="z.B. VW Golf 7 GTI, Bj. 2018"></div>
       <div class="form-group"><label>Anliegen</label>
         <textarea id="bkA" placeholder="Was soll gemacht / angeschaut werden?"></textarea></div>
+      <div class="form-group"><label>Wie möchtest du zur Terminbestätigung kontaktiert werden? *</label>
+        <select id="bkKontakt" required>
+          <option value="whatsapp">WhatsApp</option>
+          <option value="sms">SMS</option>
+          <option value="email">E-Mail</option>
+          <option value="telegram">Telegram</option>
+        </select></div>
       <div class="form-group form-group--check">
         <label class="checkbox-label">
           <input type="checkbox" id="bkNeu">
@@ -197,10 +204,15 @@ const CalendarWidget = {
 
     const vorname  = v('bkV'), nachname = v('bkN'), telefon = v('bkT');
     const email    = v('bkE'), fahrzeug = v('bkF'), anliegen = v('bkA');
+    const kontakt  = v('bkKontakt');
     const neukunde = ch('bkNeu'), dsgvo = ch('bkDS');
 
     if (!vorname || !nachname || !telefon || !fahrzeug) {
       msg.textContent = 'Bitte alle Pflichtfelder ausfüllen.';
+      msg.className = 'cal__msg cal__msg--err'; return;
+    }
+    if (kontakt === 'email' && !email) {
+      msg.textContent = 'Für die Benachrichtigung per E-Mail bitte deine E-Mail-Adresse angeben.';
       msg.className = 'cal__msg cal__msg--err'; return;
     }
     if (!dsgvo) {
@@ -217,7 +229,8 @@ const CalendarWidget = {
         body: JSON.stringify({
           date: this.selDate, time: this.selTime,
           name: `${vorname} ${nachname}`, phone: telefon,
-          email, vehicle: fahrzeug, notes: anliegen, newCustomer: neukunde
+          email, vehicle: fahrzeug, notes: anliegen, newCustomer: neukunde,
+          contactVia: kontakt
         })
       });
       const j = await r.json();
