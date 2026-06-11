@@ -102,6 +102,8 @@
     .btn--wa:hover { background: transparent; color: #25D366; }
     .btn--sms { background: #3b82f6; color: #fff; border-color: #3b82f6; }
     .btn--sms:hover { background: transparent; color: #3b82f6; }
+    .btn--tg { background: #229ED9; color: #fff; border-color: #229ED9; }
+    .btn--tg:hover { background: transparent; color: #229ED9; }
     .btn--mail { background: #888; color: #fff; border-color: #888; }
     .btn--mail:hover { background: transparent; color: #888; }
 
@@ -303,6 +305,9 @@ function renderDetail(ds) {
     if (booking) {
       var phoneClean = booking.phone.replace(/[^0-9+]/g, '');
       var phoneWA = phoneClean.replace(/^\+/, '').replace(/^0/, '49');
+      var pref = booking.contactVia || 'whatsapp';
+      var prefLabel = { whatsapp: 'WhatsApp', sms: 'SMS', email: 'E-Mail', telegram: 'Telegram' }[pref] || 'WhatsApp';
+      function star(k) { return pref === k ? '★ ' : ''; }
       div.innerHTML = `
         <span class="slot__time">${time} Uhr</span>
         <span class="slot__status slot__status--booked">Gebucht</span>
@@ -312,6 +317,7 @@ function renderDetail(ds) {
           ${booking.vehicle}
           ${booking.notes ? '<br>' + booking.notes : ''}
           ${booking.newCustomer ? '<br><strong>★ Neukunde</strong>' : ''}
+          <br><strong>Wunsch-Kontakt: ${prefLabel}</strong>
         </div>
         <div class="slot__confirm">
           <div class="slot__confirm-row">
@@ -325,9 +331,10 @@ function renderDetail(ds) {
             <input type="text" placeholder="Kosten (z.B. 180 €)" data-cost="${time}">
           </div>
           <div class="slot__send-btns">
-            <button class="btn btn--sm btn--wa" data-wa="${time}" data-phone="${phoneWA}" data-name="${booking.name}" data-email="${booking.email || ''}">WhatsApp</button>
-            <button class="btn btn--sm btn--sms" data-sms="${time}" data-phone="${phoneClean}" data-name="${booking.name}">SMS</button>
-            ${booking.email ? '<button class="btn btn--sm btn--mail" data-mail="' + time + '" data-email="' + booking.email + '" data-name="' + booking.name + '">E-Mail</button>' : ''}
+            <button class="btn btn--sm btn--wa" data-wa="${time}" data-phone="${phoneWA}" data-name="${booking.name}" data-email="${booking.email || ''}">${star('whatsapp')}WhatsApp</button>
+            <button class="btn btn--sm btn--sms" data-sms="${time}" data-phone="${phoneClean}" data-name="${booking.name}">${star('sms')}SMS</button>
+            ${booking.email ? '<button class="btn btn--sm btn--mail" data-mail="' + time + '" data-email="' + booking.email + '" data-name="' + booking.name + '">' + star('email') + 'E-Mail</button>' : ''}
+            <button class="btn btn--sm btn--tg" data-tg="${time}" data-phone="${phoneClean}" data-name="${booking.name}">${star('telegram')}Telegram</button>
             <button class="btn btn--sm btn--outline" data-ics="${time}" data-name="${booking.name}">📅 .ics an Telegram</button>
           </div>
         </div>
@@ -418,6 +425,15 @@ function renderDetail(ds) {
       var type = grid.querySelector('[data-type="' + b.dataset.mail + '"]').value;
       var subject = (type === 'change' ? 'Terminänderung' : 'Terminbestätigung') + ' WELKLOHS – ' + d + '.' + m + '.' + y;
       window.open('mailto:' + b.dataset.email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(msg), '_blank');
+    }));
+
+  grid.querySelectorAll('[data-tg]').forEach(b =>
+    b.addEventListener('click', () => {
+      var msg = buildMsg(b.dataset.tg, b.dataset.name, true);
+      navigator.clipboard.writeText(msg).then(() => {
+        alert('Nachricht kopiert! Telegram öffnet sich — Nachricht im Chat einfügen.');
+        window.open('https://t.me/' + b.dataset.phone, '_blank');
+      });
     }));
 
   grid.querySelectorAll('[data-ics]').forEach(b =>
