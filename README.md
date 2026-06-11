@@ -1,6 +1,6 @@
-# Welklohs — Website
+# WELKLOHS — Internetauftritt & Buchungssystem
 
-Werkstatt & Tuning Website für Welklohs.
+Werkstatt & Tuning Website für WELKLOHS.
 
 ## Struktur
 
