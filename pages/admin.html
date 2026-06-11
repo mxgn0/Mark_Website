@@ -93,6 +93,10 @@
       color: var(--white); font-family: var(--font); font-size: 0.78rem;
     }
     .slot__confirm-row input:focus { border-color: var(--white); outline: none; }
+    .slot__type {
+      flex: 1; padding: 8px 10px; background: var(--bg); border: 1px solid var(--border);
+      color: var(--white); font-family: var(--font); font-size: 0.78rem; cursor: pointer;
+    }
     .slot__send-btns { display: flex; gap: 6px; flex-wrap: wrap; }
     .btn--wa { background: #25D366; color: #fff; border-color: #25D366; }
     .btn--wa:hover { background: transparent; color: #25D366; }
@@ -311,6 +315,12 @@ function renderDetail(ds) {
         </div>
         <div class="slot__confirm">
           <div class="slot__confirm-row">
+            <select data-type="${time}" class="slot__type">
+              <option value="confirm">Bestätigung</option>
+              <option value="change">Terminänderung</option>
+            </select>
+          </div>
+          <div class="slot__confirm-row">
             <input type="text" placeholder="Dauer (z.B. 2 Stunden)" data-dur="${time}">
             <input type="text" placeholder="Kosten (z.B. 180 €)" data-cost="${time}">
           </div>
@@ -318,6 +328,7 @@ function renderDetail(ds) {
             <button class="btn btn--sm btn--wa" data-wa="${time}" data-phone="${phoneWA}" data-name="${booking.name}" data-email="${booking.email || ''}">WhatsApp</button>
             <button class="btn btn--sm btn--sms" data-sms="${time}" data-phone="${phoneClean}" data-name="${booking.name}">SMS</button>
             ${booking.email ? '<button class="btn btn--sm btn--mail" data-mail="' + time + '" data-email="' + booking.email + '" data-name="' + booking.name + '">E-Mail</button>' : ''}
+            <button class="btn btn--sm btn--outline" data-ics="${time}" data-name="${booking.name}">📅 .ics an Telegram</button>
           </div>
         </div>
         <div class="slot__actions" style="margin-top:8px">
@@ -360,35 +371,65 @@ function renderDetail(ds) {
     }));
 
   // Bestätigungsnachrichten
-  function buildMsg(time, name) {
+  function buildMsg(time, name, withIcs) {
     var dur = grid.querySelector('[data-dur="' + time + '"]').value || '–';
     var cost = grid.querySelector('[data-cost="' + time + '"]').value || '–';
+    var type = grid.querySelector('[data-type="' + time + '"]').value;
     var [y, m, d] = ds.split('-');
-    return 'Hallo ' + name.split(' ')[0] + ', dein Termin am ' + d + '.' + m + '.' + y + ' um ' + time + ' Uhr ist bestätigt.\n\n'
+    var intro = type === 'change'
+      ? 'Hallo ' + name.split(' ')[0] + ', dein Termin bei WELKLOHS wurde geändert. Neuer Termin: ' + d + '.' + m + '.' + y + ' um ' + time + ' Uhr.'
+      : 'Hallo ' + name.split(' ')[0] + ', dein Termin am ' + d + '.' + m + '.' + y + ' um ' + time + ' Uhr ist bestätigt.';
+    var msg = intro + '\n\n'
       + 'Geschätzte Dauer: ' + dur + '\n'
       + 'Geschätzte Kosten: ' + cost + '\n\n'
       + 'Bei Fragen einfach melden.\n'
       + 'Bis dann! – WELKLOHS';
+    if (withIcs) {
+      var icsLink = WORKER_URL + '/api/ics?date=' + ds + '&time=' + encodeURIComponent(time)
+        + '&name=' + encodeURIComponent(name)
+        + (dur !== '–' ? '&dur=' + encodeURIComponent(dur) : '');
+      msg += '\n\n📅 Termin in deinen Kalender eintragen:\n' + icsLink
+        + '\n(Link antippen → Datei öffnen → Termin wird automatisch übernommen)';
+    }
+    return msg;
   }
 
   grid.querySelectorAll('[data-wa]').forEach(b =>
     b.addEventListener('click', () => {
-      var msg = buildMsg(b.dataset.wa, b.dataset.name);
+      var msg = buildMsg(b.dataset.wa, b.dataset.name, true);
       window.open('https://wa.me/' + b.dataset.phone + '?text=' + encodeURIComponent(msg), '_blank');
     }));
 
   grid.querySelectorAll('[data-sms]').forEach(b =>
     b.addEventListener('click', () => {
-      var msg = buildMsg(b.dataset.sms, b.dataset.name);
+      var time = b.dataset.sms;
+      var dur = grid.querySelector('[data-dur="' + time + '"]').value;
+      var msg = buildMsg(time, b.dataset.name, false)
+        + '\n\nKalender: ' + WORKER_URL + '/api/ics?date=' + ds + '&time=' + encodeURIComponent(time)
+        + '&name=' + encodeURIComponent(b.dataset.name.split(' ')[0])
+        + (dur ? '&dur=' + encodeURIComponent(dur) : '');
       window.open('sms:' + b.dataset.phone + '?body=' + encodeURIComponent(msg), '_blank');
     }));
 
   grid.querySelectorAll('[data-mail]').forEach(b =>
     b.addEventListener('click', () => {
-      var msg = buildMsg(b.dataset.mail, b.dataset.name);
+      var msg = buildMsg(b.dataset.mail, b.dataset.name, true);
       var [y, m, d] = ds.split('-');
-      var subject = 'Terminbestätigung WELKLOHS – ' + d + '.' + m + '.' + y;
+      var type = grid.querySelector('[data-type="' + b.dataset.mail + '"]').value;
+      var subject = (type === 'change' ? 'Terminänderung' : 'Terminbestätigung') + ' WELKLOHS – ' + d + '.' + m + '.' + y;
       window.open('mailto:' + b.dataset.email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(msg), '_blank');
+    }));
+
+  grid.querySelectorAll('[data-ics]').forEach(b =>
+    b.addEventListener('click', async () => {
+      var dur = grid.querySelector('[data-dur="' + b.dataset.ics + '"]').value;
+      b.disabled = true; b.textContent = 'Wird gesendet …';
+      var r = await api('/api/admin/sendics', {
+        method: 'POST',
+        body: JSON.stringify({ date: ds, time: b.dataset.ics, name: b.dataset.name, duration: dur })
+      });
+      b.disabled = false;
+      b.textContent = (r && r.success) ? '✓ Gesendet' : 'Fehler — nochmal';
     }));
 }
 
