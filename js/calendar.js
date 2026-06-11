@@ -2,7 +2,7 @@
    WELKLOHS – Buchungskalender
    ============================================================ */
 
-const WORKER_URL = 'https://DEIN-WORKER.workers.dev'; // ← anpassen!
+const WORKER_URL = 'https://bookings.mxgn-studio.workers.dev'; // ← anpassen!
 
 const CalendarWidget = {
   el: null,
