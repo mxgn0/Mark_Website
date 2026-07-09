@@ -32,3 +32,8 @@ https://mxgn0.github.io/Mark_Website/
 
 Admin Kalender:
 https://mxgn0.github.io/Mark_Website/pages/admin.html
+
+## Buchungen → Notion
+
+Anleitung, wie Website-Buchungen in Marks eigenem Notion (und Notion Calendar)
+landen: [`docs/notion-einrichtung.md`](docs/notion-einrichtung.md).
