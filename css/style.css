@@ -334,10 +334,7 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   background-size: cover;
   background-position: center;
   background-color: #111;
-  transform: scale(1.05);
-  transition: transform 8s ease;
 }
-.hero.loaded .hero__img { transform: scale(1); }
 .hero__overlay {
   position: absolute;
   inset: 0;
@@ -694,5 +691,4 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero__img { transition: none; transform: none; }
 }
