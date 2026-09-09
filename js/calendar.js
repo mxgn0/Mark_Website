@@ -4,6 +4,10 @@
 
 const WORKER_URL = 'https://bookings.mxgn-studio.workers.dev'; // ← anpassen!
 
+/* Farbspektrum des Lotus-Logos, von Hellblau ueber Blau nach Violett.
+   Index = Wochentag (0 = Sonntag). Wird nur als Umrandung sichtbar. */
+const SPEKTRUM = ['#2A0098', '#66A8FF', '#2E8FFF', '#0075FF', '#1B4BFF', '#2340FF', '#4A1CC4'];
+
 const CalendarWidget = {
   el: null,
   month: null,
@@ -113,10 +117,9 @@ const CalendarWidget = {
       else if (blocked || free === 0) btn.classList.add('cal__day--full');
       else {
         btn.classList.add('cal__day--free');
-        // Wie voll ist der Tag? 0 = fast nichts mehr frei, 1 = alles frei.
-        // Die Kachel wird entsprechend staerker blau eingefaerbt.
-        const total = (d.slots || []).length || 1;
-        btn.style.setProperty('--av', (free / total).toFixed(2));
+        // Jeder Wochentag bekommt seine Farbe aus dem Spektrum des Logos.
+        // Sichtbar wird sie nur beim Hover und bei der Auswahl - als Umrandung.
+        btn.style.setProperty('--hov', SPEKTRUM[dow]);
         btn.title = free === 1 ? 'Noch 1 Termin frei' : `Noch ${free} Termine frei`;
         btn.addEventListener('click', () => this.pickDate(ds));
       }
@@ -140,6 +143,8 @@ const CalendarWidget = {
     const dn = ['So','Mo','Di','Mi','Do','Fr','Sa'][new Date(+y, m - 1, +d).getDay()];
 
     const wrap = this.el.querySelector('.cal__slots');
+    // Slots erben die Farbe des gewaehlten Tages
+    wrap.style.setProperty('--hov', SPEKTRUM[new Date(+y, m - 1, +d).getDay()]);
     wrap.innerHTML = `
       <p class="cal__slots-label">${dn}, ${d}.${m}.${y}</p>
       <div class="cal__slots-grid">
