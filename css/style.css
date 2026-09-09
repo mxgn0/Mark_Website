@@ -466,7 +466,6 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   color: var(--light);
   transition: all var(--transition);
 }
-.kontakt-pill:hover { border-color: var(--white); color: var(--white); }
 .kontakt-pill .ico { width: 18px; height: 18px; }
 
 /* Kalender-Box */
@@ -496,29 +495,25 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .cal__day--off   { opacity: 0.12; }
 .cal__day--full  { opacity: 0.3; color: var(--muted); }
 
-/* Freie Tage: je mehr noch frei ist, desto kraeftiger das Blau.
-   --av kommt aus calendar.js und liegt zwischen 0 und 1.
-   Ohne color-mix-Unterstuetzung bleibt schlicht die Grundflaeche stehen. */
-.cal__day--free {
-  cursor: pointer;
-  background: var(--black);
-  background: color-mix(in srgb, var(--wk-blue) calc(var(--av, 1) * 16%), var(--black));
-  border-color: color-mix(in srgb, var(--wk-blue) calc(var(--av, 1) * 34%), var(--border));
-}
+/* Freie Tage liegen neutral da. Farbe kommt erst beim Anfassen — und
+   jeder Wochentag hat seine eigene aus dem Spektrum des Logos.
+   --hov setzt calendar.js pro Kachel. */
+.cal__day--free { cursor: pointer; background: var(--black); }
 .cal__day--free:hover {
-  border-color: var(--wk-blue);
-  color: var(--wk-blue);
-  transform: translateY(-1px);
+  border-color: var(--hov, var(--wk-blue));
+  color: var(--hov, var(--wk-blue));
 }
 
-/* Heute: Ring statt Fuellung, damit die Auswahl davon unterscheidbar bleibt */
-.cal__day--today { box-shadow: inset 0 0 0 1px var(--wk-blue); font-weight: 700; }
+/* Heute: gestrichelt, damit es nicht mit der Auswahl verwechselt wird */
+.cal__day--today { border-style: dashed; border-color: var(--steel); }
 
-/* Gewaehlter Tag: die eine kraeftige Geste im Kalender */
+/* Auswahl: kraeftigere Umrandung, keine Fuellung */
 .cal__day--sel, .cal__day--free.cal__day--sel {
-  background: linear-gradient(140deg, var(--wk-blue) 0%, var(--wk-violet) 100%);
-  border-color: transparent; color: #fff; transform: none;
-  box-shadow: 0 3px 14px rgba(0,117,255,0.3);
+  border-color: var(--hov, var(--wk-blue));
+  border-style: solid;
+  box-shadow: inset 0 0 0 2px var(--hov, var(--wk-blue));
+  color: var(--hov, var(--wk-blue));
+  background: var(--black);
 }
 .cal__loading, .cal__error { text-align: center; color: var(--muted); font-size: 0.8125rem; padding: 40px 0; grid-column: 1 / -1; }
 
@@ -529,11 +524,12 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   background: var(--black); border: 1px solid var(--border); border-radius: var(--btn-radius); color: var(--white);
   cursor: pointer; transition: all .15s;
 }
-.cal__slot:hover { border-color: var(--wk-blue); color: var(--wk-blue); }
+.cal__slot:hover { border-color: var(--hov, var(--wk-blue)); color: var(--hov, var(--wk-blue)); }
 .cal__slot--sel, .cal__slot--sel:hover {
-  background: linear-gradient(140deg, var(--wk-blue) 0%, var(--wk-violet) 100%);
-  border-color: transparent; color: #fff;
-  box-shadow: 0 3px 14px rgba(0,117,255,0.3);
+  border-color: var(--hov, var(--wk-blue));
+  box-shadow: inset 0 0 0 2px var(--hov, var(--wk-blue));
+  color: var(--hov, var(--wk-blue));
+  background: var(--black);
 }
 
 .cal__form-label { font-size: 0.8125rem; font-family: var(--font-text); font-weight: 700; margin-bottom: 20px; color: var(--white); }
@@ -609,13 +605,20 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .kontakt-card__icon { grid-row: 1 / 3; color: var(--white); display: flex; transition: color var(--transition); }
 .kontakt-card__icon .ico { width: 24px; height: 24px; }
 
-/* Hover deutet die Farbe des jeweiligen Dienstes an */
-.kontakt-card, .social__link { --mark: var(--white); }
-.kontakt-card--tel, .kontakt-card--mail { --mark: var(--wk-blue); }
-.kontakt-card--wa  { --mark: #25D366; }
+/* Akzent nur ueber die Umrandung, die Farben kommen aus dem Logo:
+   Telefon Hellblau, Mail Blau, WhatsApp Violett. */
+.kontakt-card, .social__link, .kontakt-pill { --mark: var(--white); }
+.kontakt-card--tel,  .kontakt-pill--tel  { --mark: #2E8FFF; }
+.kontakt-card--mail, .kontakt-pill--mail { --mark: var(--wk-blue); }
+.kontakt-card--wa,   .kontakt-pill--wa   { --mark: #3A18B8; }
 .kontakt-card:hover { border-color: var(--mark); }
 .kontakt-card:hover .kontakt-card__icon { color: var(--mark); }
 .kontakt-card:hover .kontakt-card__value { color: var(--white); }
+.kontakt-pill:hover { border-color: var(--mark); color: var(--white); }
+/* nur die Farbe setzen: .ico zeichnet ueber stroke, das WhatsApp-Zeichen
+   ueber fill="currentColor" - beide folgen color von allein. Ein fill hier
+   wuerde die Linien-Icons zulaufen lassen. */
+.kontakt-pill:hover svg { color: var(--mark); }
 .kontakt-card__label { font-size: 0.625rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
 .kontakt-card__value { font-size: 0.9375rem; color: var(--light); }
 
