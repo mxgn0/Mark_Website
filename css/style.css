@@ -605,12 +605,12 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .kontakt-card__icon { grid-row: 1 / 3; color: var(--white); display: flex; transition: color var(--transition); }
 .kontakt-card__icon .ico { width: 24px; height: 24px; }
 
-/* Akzent nur ueber die Umrandung, die Farben kommen aus dem Logo:
-   Telefon Hellblau, Mail Blau, WhatsApp Violett. */
+/* Akzent nur ueber die Umrandung. Telefon und Mail nehmen zwei Blautoene
+   aus dem Logo, WhatsApp sein eigenes Gruen. */
 .kontakt-card, .social__link, .kontakt-pill { --mark: var(--white); }
 .kontakt-card--tel,  .kontakt-pill--tel  { --mark: #2E8FFF; }
 .kontakt-card--mail, .kontakt-pill--mail { --mark: var(--wk-blue); }
-.kontakt-card--wa,   .kontakt-pill--wa   { --mark: #3A18B8; }
+.kontakt-card--wa,   .kontakt-pill--wa   { --mark: #25D366; }
 .kontakt-card:hover { border-color: var(--mark); }
 .kontakt-card:hover .kontakt-card__icon { color: var(--mark); }
 .kontakt-card:hover .kontakt-card__value { color: var(--white); }
