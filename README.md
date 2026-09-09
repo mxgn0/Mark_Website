@@ -7,8 +7,10 @@ Werkstatt & Tuning Website für WELKLOHS.
 ```
 WELKLOHS_Website/
 ├── index.html              # Startseite
+├── preview.html            # Vorschau: Farbwelten + Button-Formen (nicht öffentlich verlinkt)
 ├── css/
-│   └── style.css           # Styling (Dark/Light Theme)
+│   ├── style.css           # Styling (Dark/Light Theme)
+│   └── preview.css         # nur für preview.html
 ├── js/
 │   ├── main.js             # Navigation, Theme-Toggle, Scroll
 │   └── calendar.js         # Buchungskalender (→ Cloudflare Worker)
@@ -32,6 +34,9 @@ https://mxgn0.github.io/Mark_Website/
 
 Admin Kalender:
 https://mxgn0.github.io/Mark_Website/pages/admin.html
+
+Vorschau Farben/Buttons (Toolbar unten links, nirgends verlinkt):
+https://mxgn0.github.io/Mark_Website/preview.html
 
 ## Buchungen → Notion
 
