@@ -246,3 +246,19 @@ html[data-brand="verlauf"][data-theme="dark"] .termin__badge { border-color: #9d
 .pv button:hover { border-color: #cfd5dd; color: #fff; }
 .pv button.on { background: #0075FF; border-color: #0075FF; color: #fff; }
 .pv__hint { color: #6b7280; margin-top: 8px; font-size: 0.62rem; }
+
+/* ---------- SCHRIFT-VARIANTEN ---------- */
+/* Avenir ist OpenType/CFF ohne Hinting — in Versalien laufen die Buchstaben
+   klein oben und unten aus. Jost ist TrueType und gehintet.                */
+html[data-font="avenir"] {
+  --font-display: 'Avenir', sans-serif;
+  --font-text:    'Avenir', sans-serif;
+}
+html[data-font="mix"] {
+  --font-display: 'Avenir', 'Jost', sans-serif;
+  --font-text:    'Jost', 'Avenir', sans-serif;
+}
+html[data-font="jost"] {
+  --font-display: 'Jost', sans-serif;
+  --font-text:    'Jost', sans-serif;
+}

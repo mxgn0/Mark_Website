@@ -33,6 +33,7 @@
       try {
         document.documentElement.setAttribute('data-brand', localStorage.getItem('pv-brand') || 'klinik');
         document.documentElement.setAttribute('data-btn',   localStorage.getItem('pv-btn')   || 'rund');
+        document.documentElement.setAttribute('data-font',  localStorage.getItem('pv-font')  || 'mix');
       } catch (e) {}
     })();
     // Theme-Umschalter (Event-Delegation — läuft unabhängig von Ladereihenfolge)
@@ -376,6 +377,11 @@
 
   <!-- PREVIEW-TOOLBAR (nicht für den Live-Stand) -->
   <div class="pv" id="pv">
+    <div class="pv__row"><span class="pv__lbl">Schrift</span>
+      <button data-k="font" data-v="avenir">Avenir</button>
+      <button data-k="font" data-v="mix">Jost + Avenir fett</button>
+      <button data-k="font" data-v="jost">Jost</button>
+    </div>
     <div class="pv__row"><span class="pv__lbl">Farbe</span>
       <button data-k="brand" data-v="mono">Mono</button>
       <button data-k="brand" data-v="akzent">Mono + Blau</button>
@@ -397,7 +403,8 @@
       var root = document.documentElement, pv = document.getElementById('pv');
       function sync() {
         pv.querySelectorAll('button').forEach(function (b) {
-          var cur = root.getAttribute('data-' + b.dataset.k) || (b.dataset.k === 'brand' ? 'mono' : 'rund');
+          var def = { brand: 'mono', btn: 'rund', font: 'mix' }[b.dataset.k];
+          var cur = root.getAttribute('data-' + b.dataset.k) || def;
           b.classList.toggle('on', cur === b.dataset.v);
         });
       }
