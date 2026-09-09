@@ -13,7 +13,10 @@ einfaerben.
   favicon.svg           lotus-color mit engerem viewBox, damit die Bluete im
                         16px-Tab groesser sitzt.
   apple-touch-icon.png  180x180, Logo auf dunklem Grund.
-  og-image.png          1200x630 Vorschaubild fuer geteilte Links.
+  einbettung.png        Wortmarke von Max, Quelle fuer og-image.png.
+  og-image.png          1200x630 Vorschaubild fuer geteilte Links: einbettung.png
+                        mittig auf Weiss. Neu bauen, wenn einbettung.png sich
+                        aendert.
 
 Wenn du eine saubere Vektordatei aus Affinity exportierst (SVG), ersetze
 lotus.svg damit - der Trace ist gut, aber ein echter Export ist exakter.

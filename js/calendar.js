@@ -113,8 +113,14 @@ const CalendarWidget = {
       else if (blocked || free === 0) btn.classList.add('cal__day--full');
       else {
         btn.classList.add('cal__day--free');
+        // Wie voll ist der Tag? 0 = fast nichts mehr frei, 1 = alles frei.
+        // Die Kachel wird entsprechend staerker blau eingefaerbt.
+        const total = (d.slots || []).length || 1;
+        btn.style.setProperty('--av', (free / total).toFixed(2));
+        btn.title = free === 1 ? 'Noch 1 Termin frei' : `Noch ${free} Termine frei`;
         btn.addEventListener('click', () => this.pickDate(ds));
       }
+      if (dt.getTime() === today.getTime()) btn.classList.add('cal__day--today');
       if (ds === this.selDate) btn.classList.add('cal__day--sel');
       grid.appendChild(btn);
     }

@@ -248,7 +248,7 @@ h1, h2, h3 {
 .nav__logo {
   display: inline-flex; align-items: center; gap: 12px;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 1.3125rem;
   letter-spacing: 0.1em;
   margin-right: auto;
@@ -479,7 +479,7 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   background: none; border: 1px solid var(--border); border-radius: var(--btn-radius); color: var(--white);
   width: 36px; height: 36px; font-size: 1.1875rem; cursor: pointer; transition: border-color .2s;
 }
-.cal__arrow:hover { border-color: var(--white); }
+.cal__arrow:hover { border-color: var(--wk-blue); color: var(--wk-blue); }
 .cal__title { font-size: 0.875rem; font-family: var(--font-text); font-weight: 700; letter-spacing: 0.06em; min-width: 160px; text-align: center; }
 
 .cal__weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
@@ -494,10 +494,32 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .cal__day--empty { border: none; background: transparent; }
 .cal__day--past  { opacity: 0.2; }
 .cal__day--off   { opacity: 0.12; }
-.cal__day--full  { opacity: 0.25; color: var(--muted); }
-.cal__day--free  { cursor: pointer; background: var(--black); }
-.cal__day--free:hover { border-color: var(--white); }
-.cal__day--sel   { border-color: var(--white); background: var(--white); color: var(--black); }
+.cal__day--full  { opacity: 0.3; color: var(--muted); }
+
+/* Freie Tage: je mehr noch frei ist, desto kraeftiger das Blau.
+   --av kommt aus calendar.js und liegt zwischen 0 und 1.
+   Ohne color-mix-Unterstuetzung bleibt schlicht die Grundflaeche stehen. */
+.cal__day--free {
+  cursor: pointer;
+  background: var(--black);
+  background: color-mix(in srgb, var(--wk-blue) calc(var(--av, 1) * 16%), var(--black));
+  border-color: color-mix(in srgb, var(--wk-blue) calc(var(--av, 1) * 34%), var(--border));
+}
+.cal__day--free:hover {
+  border-color: var(--wk-blue);
+  color: var(--wk-blue);
+  transform: translateY(-1px);
+}
+
+/* Heute: Ring statt Fuellung, damit die Auswahl davon unterscheidbar bleibt */
+.cal__day--today { box-shadow: inset 0 0 0 1px var(--wk-blue); font-weight: 700; }
+
+/* Gewaehlter Tag: die eine kraeftige Geste im Kalender */
+.cal__day--sel, .cal__day--free.cal__day--sel {
+  background: linear-gradient(140deg, var(--wk-blue) 0%, var(--wk-violet) 100%);
+  border-color: transparent; color: #fff; transform: none;
+  box-shadow: 0 3px 14px rgba(0,117,255,0.3);
+}
 .cal__loading, .cal__error { text-align: center; color: var(--muted); font-size: 0.8125rem; padding: 40px 0; grid-column: 1 / -1; }
 
 .cal__slots-label { font-size: 0.6875rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 12px; }
@@ -507,15 +529,19 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   background: var(--black); border: 1px solid var(--border); border-radius: var(--btn-radius); color: var(--white);
   cursor: pointer; transition: all .15s;
 }
-.cal__slot:hover { border-color: var(--white); }
-.cal__slot--sel  { border-color: var(--white); background: var(--white); color: var(--black); }
+.cal__slot:hover { border-color: var(--wk-blue); color: var(--wk-blue); }
+.cal__slot--sel, .cal__slot--sel:hover {
+  background: linear-gradient(140deg, var(--wk-blue) 0%, var(--wk-violet) 100%);
+  border-color: transparent; color: #fff;
+  box-shadow: 0 3px 14px rgba(0,117,255,0.3);
+}
 
 .cal__form-label { font-size: 0.8125rem; font-family: var(--font-text); font-weight: 700; margin-bottom: 20px; color: var(--white); }
 .cal__msg { margin-top: 12px; font-size: 0.8125rem; }
 .cal__msg--err { color: #d23b3b; }
 
 .cal__ok { text-align: center; padding: 40px 20px; }
-.cal__ok-icon { display: block; margin: 0 auto 12px; width: 44px; height: 44px; color: var(--white); }
+.cal__ok-icon { display: block; margin: 0 auto 12px; width: 44px; height: 44px; color: var(--wk-blue); }
 .cal__ok-icon svg { width: 100%; height: 100%; }
 .cal__ok-title { font-size: 1.125rem; font-family: var(--font-text); font-weight: 700; margin-bottom: 8px; }
 .cal__ok p { color: var(--muted); font-size: 0.875rem; }
@@ -652,7 +678,7 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 }
 .footer__logo {
   display: inline-flex; align-items: center; gap: 10px;
-  font-family: var(--font-display); font-weight: 800;
+  font-family: var(--font-display); font-weight: 700;
   font-size: 1.375rem; letter-spacing: 0.1em; margin-bottom: 8px;
 }
 .footer__logo .logo-mark { height: 28px; }
