@@ -239,7 +239,7 @@ const CalendarWidget = {
         this.el.querySelector('.cal__slots').innerHTML = '';
         this.el.querySelector('.cal__form').innerHTML = `
           <div class="cal__ok">
-            <span class="cal__ok-icon">✓</span>
+            <span class="cal__ok-icon"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.4l2.8 2.8L16 9.8"/></svg></span>
             <p class="cal__ok-title">Termin gebucht!</p>
             <p>Wir melden uns innerhalb von 24 h zur Bestätigung.</p>
           </div>`;

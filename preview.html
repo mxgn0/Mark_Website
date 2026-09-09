@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WELKLOHS Fahrzeugtechnik — Meisterbetrieb in Leipzig</title>
-  <meta name="description" content="WELKLOHS Fahrzeugtechnik – Der neue Meisterbetrieb in Leipzig. Tuning, Reparatur, Inspektion. Jetzt kostenfreie Erstinspektion sichern." />
+  <title>PREVIEW — WELKLOHS Farb- und Button-Varianten</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Interne Vorschau der Farb- und Button-Varianten. Nicht die öffentliche Startseite." />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/preview.css" />
   <script>
     // Cookie-Einwilligung sofort prüfen (vor dem Rendern)
     (function () {
@@ -24,6 +26,13 @@
       try {
         var t = localStorage.getItem('welklohs-theme');
         if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+    // PREVIEW: Farbwelt + Button-Form vor dem Rendern setzen
+    (function () {
+      try {
+        document.documentElement.setAttribute('data-brand', localStorage.getItem('pv-brand') || 'klinik');
+        document.documentElement.setAttribute('data-btn',   localStorage.getItem('pv-btn')   || 'rund');
       } catch (e) {}
     })();
     // Theme-Umschalter (Event-Delegation — läuft unabhängig von Ladereihenfolge)
@@ -364,6 +373,43 @@
       <p>© 2026 WELKLOHS Fahrzeugtechnik. Alle Rechte vorbehalten.</p>
     </div>
   </footer>
+
+  <!-- PREVIEW-TOOLBAR (nicht für den Live-Stand) -->
+  <div class="pv" id="pv">
+    <div class="pv__row"><span class="pv__lbl">Farbe</span>
+      <button data-k="brand" data-v="mono">Mono</button>
+      <button data-k="brand" data-v="akzent">Mono + Blau</button>
+      <button data-k="brand" data-v="klinik">Klinisch weiß</button>
+      <button data-k="brand" data-v="verlauf">Verlauf</button>
+    </div>
+    <div class="pv__row"><span class="pv__lbl">Button</span>
+      <button data-k="btn" data-v="eckig">Eckig</button>
+      <button data-k="btn" data-v="rund">Rund 8</button>
+      <button data-k="btn" data-v="weich">Rund 14</button>
+      <button data-k="btn" data-v="pill">Pill</button>
+      <button data-k="btn" data-v="fase">Fase 4×</button>
+      <button data-k="btn" data-v="fase-diag">Fase diagonal</button>
+    </div>
+    <div class="pv__hint">Hell/Dunkel wie gewohnt oben rechts. Auswahl bleibt im Browser gespeichert.</div>
+  </div>
+  <script>
+    (function () {
+      var root = document.documentElement, pv = document.getElementById('pv');
+      function sync() {
+        pv.querySelectorAll('button').forEach(function (b) {
+          var cur = root.getAttribute('data-' + b.dataset.k) || (b.dataset.k === 'brand' ? 'mono' : 'rund');
+          b.classList.toggle('on', cur === b.dataset.v);
+        });
+      }
+      pv.addEventListener('click', function (e) {
+        var b = e.target.closest('button'); if (!b) return;
+        root.setAttribute('data-' + b.dataset.k, b.dataset.v);
+        try { localStorage.setItem('pv-' + b.dataset.k, b.dataset.v); } catch (err) {}
+        sync();
+      });
+      sync();
+    })();
+  </script>
 
   <script src="js/main.js"></script>
   <script src="js/calendar.js"></script>
