@@ -16,12 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  // ─── HERO IMAGE LOAD ───
-  const hero = document.querySelector('.hero');
-  if (hero) {
-    requestAnimationFrame(() => hero.classList.add('loaded'));
-  }
-
   // ─── SCROLL FADE-IN ───
   const fadeEls = document.querySelectorAll(
     '.leistung-card, .stat, .kontakt-card, .standort__item'
