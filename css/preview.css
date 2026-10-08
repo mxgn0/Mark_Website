@@ -158,7 +158,6 @@ html[data-brand="klinik"] .hero__overlay {
   background: linear-gradient(135deg, rgba(14,17,22,0.94) 0%, rgba(14,17,22,0.75) 50%, rgba(42,0,152,0.35) 100%);
 }
 html[data-brand="klinik"] .section-label { color: var(--brand-2); }
-html[data-brand="klinik"] .hero__label { color: #9db9ff; }
 html[data-brand="klinik"] .stat__num { color: var(--brand-2); }
 html[data-brand="klinik"][data-theme="dark"] .stat__num { color: #9db9ff; }
 html[data-brand="klinik"] .leistung-card__icon,
