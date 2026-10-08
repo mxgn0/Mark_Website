@@ -400,8 +400,7 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   background: var(--panel);
 }
 .leistungen__inner { max-width: var(--max-w); margin: 0 auto; }
-.leistungen__inner > h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 12px; }
-.leistungen__sub { color: var(--muted); font-size: 0.875rem; margin-bottom: 56px; }
+.leistungen__inner > h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 56px; }
 .leistungen__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -409,6 +408,7 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   margin-bottom: 48px;
 }
 .leistung-card {
+  container-type: inline-size;
   background: var(--black);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -418,7 +418,11 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .leistung-card:hover { border-color: var(--white); }
 .leistung-card__icon { display: block; color: var(--white); margin-bottom: 18px; }
 .leistung-card__icon .ico { width: 28px; height: 28px; }
-.leistung-card h3 { font-size: 1.375rem; margin-bottom: 12px; }
+.leistung-card h3 {
+  font-size: 1.375rem;
+  font-size: min(1.375rem, 9cqi); /* lange Wörter wie „Individualisierung“ passen auch in schmale Kacheln */
+  margin-bottom: 12px;
+}
 .leistung-card p { font-size: 0.8125rem; color: var(--light); line-height: 1.8; }
 
 .leistungen__anfrage {
