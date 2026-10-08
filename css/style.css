@@ -655,6 +655,14 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .social__link--yt:hover svg { fill: var(--mark); }
 .social__link--ig:hover svg { fill: url(#ig-grad); }
 
+/* Ab und zu leuchtet ein Button dezent in seiner Akzentfarbe auf —
+   höchstens 3× pro Minute, immer abwechselnd (Taktung in main.js) */
+@keyframes social-glow {
+  0%, 100% { border-color: var(--border); box-shadow: 0 0 0 -6px var(--mark); }
+  45%, 55% { border-color: var(--mark);   box-shadow: 0 0 18px -4px var(--mark); }
+}
+.social__link.is-glowing { animation: social-glow 2.6s ease-in-out; }
+
 /* ─── STANDORT ─── */
 .standort { border-top: 1px solid var(--border); padding: 100px var(--pad); }
 .standort__inner { max-width: var(--max-w); margin: 0 auto; }
@@ -685,10 +693,12 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   font-family: var(--font-display); font-weight: 700;
   font-size: 1.375rem; letter-spacing: 0.1em; margin-bottom: 8px;
 }
-.footer__logo .logo-mark { height: 60px; }
-/* Wie das Originallogo: Fahrzeugtechnik UNTER WELKLOHS, gleich breit */
-.footer__logo-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
-.footer__logo-sub { font-weight: 300; font-size: 0.82em; letter-spacing: 0.01em; margin-top: 0.2em; }
+/* Originallogo (aus og-image.png zugeschnitten). Die Schrift ist schwarz —
+   im Dunkel-Modus kommt die Variante mit heller Schrift zum Einsatz. */
+.footer__logo-img { display: block; height: 56px; width: auto; }
+.footer__logo-img--dark { display: none; }
+html[data-theme="dark"] .footer__logo-img--light { display: none; }
+html[data-theme="dark"] .footer__logo-img--dark { display: block; }
 .footer__brand p { font-size: 0.75rem; color: var(--muted); }
 .footer__nav, .footer__legal { display: flex; flex-direction: column; gap: 12px; }
 .footer__nav a, .footer__legal a {
