@@ -371,10 +371,12 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 /* ─── INTRO ─── */
 .intro { border-top: 1px solid var(--border); padding: 100px var(--pad); }
 .intro__inner { max-width: var(--max-w); margin: 0 auto; }
-.intro__grid { display: grid; grid-template-columns: 1fr 380px; gap: 80px; align-items: start; }
+.intro__grid { display: grid; grid-template-columns: 1fr; gap: 80px; align-items: start; }
+.intro__text { max-width: 760px; }
 .intro__text h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 28px; }
 .intro__text p { color: var(--light); font-size: 0.875rem; margin-bottom: 16px; line-height: 1.9; }
 .intro__text strong { color: var(--white); }
+.intro__text a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
 
 .intro__stats { display: flex; flex-direction: column; gap: 2px; }
 .stat { background: var(--panel); border: 1px solid var(--border); padding: 28px 32px; }
