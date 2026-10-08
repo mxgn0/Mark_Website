@@ -236,7 +236,7 @@ function renderGrid() {
     const dt = new Date(YEAR, MONTH, n);
     const dow = dt.getDay();
     const past = dt < today;
-    const work = [1,2,3,4,5].includes(dow);
+    const work = (DATA.workDays || [1,2,3,4,5,6]).includes(dow); // Mo–Sa, sofern der Worker nichts anderes vorgibt
 
     const bl = DATA.blocked[ds] || [];
     const bk = DATA.booked[ds] || [];
