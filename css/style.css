@@ -464,22 +464,16 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 }
 .termin__info > p { color: var(--light); font-size: 0.875rem; margin-bottom: 12px; }
 
-/* Kontakt Pills */
-.kontakt-direkt { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
-.kontakt-pill {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 18px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--btn-radius);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--light);
-  transition: all var(--transition);
+/* Pfeil zu „Kontakt“ — ersetzt die doppelten Kontakt-Buttons */
+.termin__to-kontakt {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; margin-top: 8px;
+  border: 1px solid var(--border); border-radius: 50%;
+  color: var(--white);
+  transition: border-color var(--transition), transform var(--transition);
 }
-.kontakt-pill .ico { width: 18px; height: 18px; }
+.termin__to-kontakt .ico { width: 26px; height: 26px; }
+.termin__to-kontakt:hover { border-color: var(--white); transform: translateY(4px); }
 
 /* Kalender-Box */
 .termin__form { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; }
@@ -620,18 +614,13 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 
 /* Akzent nur ueber die Umrandung. Telefon und Mail nehmen zwei Blautoene
    aus dem Logo, WhatsApp sein eigenes Gruen. */
-.kontakt-card, .social__link, .kontakt-pill { --mark: var(--white); }
-.kontakt-card--tel,  .kontakt-pill--tel  { --mark: #2E8FFF; }
-.kontakt-card--mail, .kontakt-pill--mail { --mark: var(--wk-blue); }
-.kontakt-card--wa,   .kontakt-pill--wa   { --mark: #25D366; }
+.kontakt-card, .social__link { --mark: var(--white); }
+.kontakt-card--tel  { --mark: #2E8FFF; }
+.kontakt-card--mail { --mark: var(--wk-blue); }
+.kontakt-card--wa   { --mark: #25D366; }
 .kontakt-card:hover { border-color: var(--mark); }
 .kontakt-card:hover .kontakt-card__icon { color: var(--mark); }
 .kontakt-card:hover .kontakt-card__value { color: var(--white); }
-.kontakt-pill:hover { border-color: var(--mark); color: var(--white); }
-/* nur die Farbe setzen: .ico zeichnet ueber stroke, das WhatsApp-Zeichen
-   ueber fill="currentColor" - beide folgen color von allein. Ein fill hier
-   wuerde die Linien-Icons zulaufen lassen. */
-.kontakt-pill:hover svg { color: var(--mark); }
 .kontakt-card__label { font-size: 0.625rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
 .kontakt-card__value { font-size: 0.9375rem; color: var(--light); }
 
@@ -644,8 +633,8 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   gap: 20px;
   flex-wrap: wrap;
 }
-.social__label { font-size: 0.6875rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin: 0; }
-.social__links { display: flex; gap: 10px; flex-wrap: wrap; margin-left: auto; }
+.social__label { font-family: var(--font-text); font-size: 1rem; font-weight: 700; letter-spacing: 0.03em; color: var(--white); margin: 0; }
+.social__links { display: flex; gap: 10px; flex-wrap: wrap; }
 .social__link {
   display: flex;
   align-items: center;
@@ -696,7 +685,10 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   font-family: var(--font-display); font-weight: 700;
   font-size: 1.375rem; letter-spacing: 0.1em; margin-bottom: 8px;
 }
-.footer__logo .logo-mark { height: 28px; }
+.footer__logo .logo-mark { height: 60px; }
+/* Wie das Originallogo: Fahrzeugtechnik UNTER WELKLOHS, gleich breit */
+.footer__logo-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+.footer__logo-sub { font-weight: 300; font-size: 0.82em; letter-spacing: 0.01em; margin-top: 0.2em; }
 .footer__brand p { font-size: 0.75rem; color: var(--muted); }
 .footer__nav, .footer__legal { display: flex; flex-direction: column; gap: 12px; }
 .footer__nav a, .footer__legal a {
@@ -748,7 +740,6 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   .kontakt-cards { grid-template-columns: 1fr; }
   .leistungen__anfrage { flex-direction: column; align-items: stretch; text-align: center; gap: 16px; }
   .social { flex-direction: column; align-items: flex-start; gap: 14px; }
-  .social__links { margin-left: 0; }
   .standort__grid { grid-template-columns: 1fr; }
   .standort__map { height: 300px; }
   .form-row { grid-template-columns: 1fr; }
