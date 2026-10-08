@@ -17,6 +17,9 @@ einfaerben.
   og-image.png          1200x630 Vorschaubild fuer geteilte Links: einbettung.png
                         mittig auf Weiss. Neu bauen, wenn einbettung.png sich
                         aendert.
+  logo-footer.png       og-image.png auf den Inhalt zugeschnitten - Logo im
+                        Footer. Im dunklen Design per CSS-Filter komplett weiss.
+                        Neu zuschneiden, wenn og-image.png sich aendert.
 
 Wenn du eine saubere Vektordatei aus Affinity exportierst (SVG), ersetze
 lotus.svg damit - der Trace ist gut, aber ein echter Export ist exakter.

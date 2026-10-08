@@ -42,6 +42,32 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // ─── SOCIAL-BUTTONS: ab und zu dezent aufleuchten ───
+  // Nur wenn der Bereich zu sehen ist, frühestens 2,5 s nach dem Reinscrollen,
+  // danach 21–30 s Pause (= höchstens 3× pro Minute), immer der nächste Button.
+  const socialBox = document.querySelector('.social');
+  const socialLinks = document.querySelectorAll('.social__link');
+  const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (socialBox && socialLinks.length && !calm && 'IntersectionObserver' in window) {
+    let visibleSince = 0, lastGlow = 0, pause = 0, next = 0;
+    new IntersectionObserver(([e]) => {
+      visibleSince = e.isIntersecting ? Date.now() : 0;
+    }, { threshold: 0.6 }).observe(socialBox);
+
+    setInterval(() => {
+      const now = Date.now();
+      if (!visibleSince || document.hidden) return;
+      if (now - visibleSince < 2500 || now - lastGlow < pause) return;
+      const el = socialLinks[next++ % socialLinks.length];
+      el.classList.remove('is-glowing');
+      void el.offsetWidth;                       // Animation sicher neu starten
+      el.classList.add('is-glowing');
+      setTimeout(() => el.classList.remove('is-glowing'), 3200);
+      lastGlow = now;
+      pause = 21000 + Math.random() * 9000;
+    }, 500);
+  }
+
   // ─── TERMIN FORM ───
   // Endpoint zu Notion (Cloudflare Worker). Nach dem Deploy hier die echte URL eintragen.
   const NOTION_ENDPOINT = 'https://DEIN-WORKER.welklohs.workers.dev';
