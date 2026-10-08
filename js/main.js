@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
       el.classList.remove('is-glowing');
       void el.offsetWidth;                       // Animation sicher neu starten
       el.classList.add('is-glowing');
-      setTimeout(() => el.classList.remove('is-glowing'), 2800);
+      setTimeout(() => el.classList.remove('is-glowing'), 3200);
       lastGlow = now;
       pause = 21000 + Math.random() * 9000;
     }, 500);

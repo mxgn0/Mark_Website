@@ -655,13 +655,17 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .social__link--yt:hover svg { fill: var(--mark); }
 .social__link--ig:hover svg { fill: url(#ig-grad); }
 
-/* Ab und zu leuchtet ein Button dezent in seiner Akzentfarbe auf —
-   höchstens 3× pro Minute, immer abwechselnd (Taktung in main.js) */
+/* Ab und zu leuchtet ein Button so auf wie beim Hover (Rand + Logo in der
+   Akzentfarbe) — höchstens 3× pro Minute, immer abwechselnd (main.js) */
 @keyframes social-glow {
-  0%, 100% { border-color: var(--border); box-shadow: 0 0 0 -6px var(--mark); }
-  45%, 55% { border-color: var(--mark);   box-shadow: 0 0 18px -4px var(--mark); }
+  0%, 100% { border-color: var(--border); color: var(--light); }
+  30%, 70% { border-color: var(--mark);   color: var(--white); }
 }
-.social__link.is-glowing { animation: social-glow 2.6s ease-in-out; }
+@keyframes social-glow-yt { 0%, 100% { fill: currentColor; } 30%, 70% { fill: var(--mark); } }
+@keyframes social-glow-ig { 0%, 100% { fill: currentColor; } 30%, 70% { fill: url(#ig-grad); } }
+.social__link.is-glowing { animation: social-glow 3s ease-in-out; }
+.social__link--yt.is-glowing svg { animation: social-glow-yt 3s ease-in-out; }
+.social__link--ig.is-glowing svg { animation: social-glow-ig 3s ease-in-out; }
 
 /* ─── STANDORT ─── */
 .standort { border-top: 1px solid var(--border); padding: 100px var(--pad); }
@@ -693,12 +697,10 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
   font-family: var(--font-display); font-weight: 700;
   font-size: 1.375rem; letter-spacing: 0.1em; margin-bottom: 8px;
 }
-/* Originallogo (aus og-image.png zugeschnitten). Die Schrift ist schwarz —
-   im Dunkel-Modus kommt die Variante mit heller Schrift zum Einsatz. */
+/* Originallogo (aus og-image.png zugeschnitten). Im Dunkel-Modus komplett
+   weiß (#f5f5f5): erst alles schwarz, dann invertieren — Transparenz bleibt. */
 .footer__logo-img { display: block; height: 56px; width: auto; }
-.footer__logo-img--dark { display: none; }
-html[data-theme="dark"] .footer__logo-img--light { display: none; }
-html[data-theme="dark"] .footer__logo-img--dark { display: block; }
+html[data-theme="dark"] .footer__logo-img { filter: brightness(0) invert(0.96); }
 .footer__brand p { font-size: 0.75rem; color: var(--muted); }
 .footer__nav, .footer__legal { display: flex; flex-direction: column; gap: 12px; }
 .footer__nav a, .footer__legal a {
