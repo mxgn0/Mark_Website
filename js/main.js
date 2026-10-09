@@ -42,29 +42,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ─── SOCIAL-BUTTONS: ab und zu dezent aufleuchten ───
-  // Nur wenn der Bereich zu sehen ist, frühestens 2,5 s nach dem Reinscrollen,
-  // danach 21–30 s Pause (= höchstens 3× pro Minute), immer der nächste Button.
-  const socialBox = document.querySelector('.social');
-  const socialLinks = document.querySelectorAll('.social__link');
+  // ─── AUFLEUCHTEN: ab und zu ein klickbares Element in seiner Akzentfarbe ───
+  // Zufällig eins, das gerade ganz im Bild ist (nie zweimal dasselbe), frühestens
+  // 4 s nach dem Laden, danach 20–30 s Pause (= höchstens 3× pro Minute).
+  // Die Navigation ist immer zu sehen — damit nicht fast nur sie leuchtet,
+  // kommt sie nur in jedem vierten Fall dran. Farben und Art: style.css.
+  const GLOW = '.nav__links a, .btn, .theme-toggle, .termin__to-kontakt, .kontakt-card, .social__link, ' +
+               '.cal__arrow, .cal__day--free:not(.cal__day--sel), .cal__slot:not(.cal__slot--sel), ' +
+               '.intro__text a, .footer__nav a, .footer__legal a';
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (socialBox && socialLinks.length && !calm && 'IntersectionObserver' in window) {
-    let visibleSince = 0, lastGlow = 0, pause = 0, next = 0;
-    new IntersectionObserver(([e]) => {
-      visibleSince = e.isIntersecting ? Date.now() : 0;
-    }, { threshold: 0.6 }).observe(socialBox);
 
+  const inView = el => {
+    if (el.disabled || el.closest('.mobile-menu, .cookie-banner') || el.matches(':hover, :focus')) return false;
+    if (el.checkVisibility ? !el.checkVisibility({ opacityProperty: true, visibilityProperty: true })
+                           : getComputedStyle(el).opacity === '0') return false;
+    const r = el.getBoundingClientRect();
+    const top = el.closest('.nav') || !nav ? 0 : nav.getBoundingClientRect().bottom;
+    return r.width > 0 && r.top >= top && r.bottom <= window.innerHeight;
+  };
+
+  if (!calm) {
+    let last = null, next = Date.now() + 4000;
     setInterval(() => {
-      const now = Date.now();
-      if (!visibleSince || document.hidden) return;
-      if (now - visibleSince < 2500 || now - lastGlow < pause) return;
-      const el = socialLinks[next++ % socialLinks.length];
+      if (document.hidden || Date.now() < next) return;
+      const pool = [...document.querySelectorAll(GLOW)].filter(el => el !== last && inView(el));
+      const inNav = pool.filter(el => el.closest('.nav'));
+      const rest  = pool.filter(el => !el.closest('.nav'));
+      const from  = rest.length && (!inNav.length || Math.random() < 0.75) ? rest : inNav;
+      if (!from.length) return;
+      const el = from[Math.floor(Math.random() * from.length)];
       el.classList.remove('is-glowing');
       void el.offsetWidth;                       // Animation sicher neu starten
       el.classList.add('is-glowing');
       setTimeout(() => el.classList.remove('is-glowing'), 3200);
-      lastGlow = now;
-      pause = 21000 + Math.random() * 9000;
+      last = el;
+      next = Date.now() + 20000 + Math.random() * 10000;
     }, 500);
   }
 
