@@ -181,7 +181,7 @@ const CalendarWidget = {
         <input type="text" id="bkF" required placeholder="z.B. VW Golf 7 GTI, Bj. 2018"></div>
       <div class="form-group"><label>Anliegen</label>
         <textarea id="bkA" placeholder="Was soll gemacht / angeschaut werden?"></textarea></div>
-      <div class="form-group"><label>Wie möchtest du zur Terminbestätigung kontaktiert werden? *</label>
+      <div class="form-group"><label>Wie möchtest Du zur Terminbestätigung kontaktiert werden? *</label>
         <select id="bkKontakt" required>
           <option value="whatsapp">WhatsApp</option>
           <option value="sms">SMS</option>
@@ -223,7 +223,7 @@ const CalendarWidget = {
       msg.className = 'cal__msg cal__msg--err'; return;
     }
     if (kontakt === 'email' && !email) {
-      msg.textContent = 'Für die Benachrichtigung per E-Mail bitte deine E-Mail-Adresse angeben.';
+      msg.textContent = 'Für die Benachrichtigung per E-Mail bitte Deine E-Mail-Adresse angeben.';
       msg.className = 'cal__msg cal__msg--err'; return;
     }
     if (!dsgvo) {
