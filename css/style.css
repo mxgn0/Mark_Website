@@ -254,20 +254,22 @@ h1, h2, h3 {
 .nav__line { display: none; }
 
 /* Abstände in em, damit Signet und Wortmarke bei jeder Größe als ein Block
-   zusammenhalten (vorher feste 10px + weite Sperrung → wirkte zerfasert) */
+   zusammenhalten. font-size ist hier nur noch die Maßeinheit fürs Logo. */
 .nav__logo {
   display: inline-flex; align-items: center; gap: 0.28em;
-  font-family: var(--font-display);
-  font-weight: 700;
   font-size: 1.5rem;
-  letter-spacing: 0.035em;
   line-height: 1;
   margin-right: auto;
 }
 /* Blüte hat im viewBox etwas Luft links/rechts — leicht an die Schrift ziehen */
 .nav__logo .logo-mark { height: 1.4em; margin-right: -0.06em; }
-/* Wortmarke wie im Logo: WELKLOHS fett, Fahrzeugtechnik leicht — nebeneinander */
-.nav__logo-sub { font-weight: 300; letter-spacing: 0.01em; }
+/* Wortmarke wie im Logo: WELKLOHS (Avenir Heavy) und Fahrzeugtechnik
+   (Avenir Light) nebeneinander — als Vektorpfad, nicht als Schrift.
+   Avenir liegt nur lückenhaft gehintet vor; als Text sprangen die Buchstaben
+   bei 100 % Zoom ungleichmäßig aufs Pixelraster. Pfade erzeugt aus den
+   Schriftdateien (Sperrung 0.035em / 0.01em, Abstand 0.28em, mit Kerning).
+   Höhe 1.188em = viewBox-Höhe / 1000; die Versalien liegen darin mittig. */
+.logo-word { height: 1.188em; width: auto; flex-shrink: 0; display: block; }
 
 /* Lotus-Signet — nimmt die Textfarbe an, funktioniert hell wie dunkel */
 .logo-mark { height: 1.15em; width: auto; flex-shrink: 0; display: block; }
@@ -666,8 +668,30 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .social__link--yt:hover svg { fill: var(--mark); }
 .social__link--ig:hover svg { fill: url(#ig-grad); }
 
-/* Ab und zu leuchtet ein Button so auf wie beim Hover (Rand + Logo in der
-   Akzentfarbe) — höchstens 3× pro Minute, immer abwechselnd (main.js) */
+/* ─── AUFLEUCHTEN ───
+   Ab und zu leuchtet ein zufälliges klickbares Element in seiner Akzentfarbe
+   auf — höchstens 3× pro Minute, nur was gerade ganz im Bild ist (main.js).
+   Akzent: WhatsApp grün, Telefon/Mail/Social wie beim Hover, Kalendertage in
+   ihrer Wochentagsfarbe, alles andere im Logo-Blau.
+   Die Keyframes setzen nur die Mitte (30–70 %); Anfang und Ende nimmt der
+   Browser vom jeweiligen Element — passt so für hell, dunkel und Hero. */
+.nav__links a, .btn, .theme-toggle, .termin__to-kontakt, .cal__arrow,
+.intro__text a, .footer__nav a, .footer__legal a { --mark: var(--wk-blue); }
+.btn--wa { --mark: #25D366; }
+.cal__day--free, .cal__slot { --mark: var(--hov, var(--wk-blue)); }
+
+@keyframes glow-line { 30%, 70% { border-color: var(--mark); color: var(--mark); } }
+@keyframes glow-fill { 30%, 70% { border-color: var(--mark); box-shadow: 0 0 0 1px var(--mark), 0 0 22px -4px var(--mark); } }
+@keyframes glow-text { 30%, 70% { color: var(--mark); } }
+@keyframes glow-edge { 30%, 70% { border-color: var(--mark); } }
+
+.is-glowing { animation: glow-line 3s ease-in-out; }
+.btn.is-glowing:not(.btn--wa):not(.btn--outline) { animation-name: glow-fill; }
+:is(.nav__links a, .intro__text a, .footer__nav a, .footer__legal a).is-glowing { animation-name: glow-text; }
+.kontakt-card.is-glowing { animation-name: glow-edge; }
+.kontakt-card.is-glowing .kontakt-card__icon { animation: glow-text 3s ease-in-out; }
+
+/* Social-Buttons wie beim Hover: Rand in Akzentfarbe, Text hell, Logo farbig */
 @keyframes social-glow {
   0%, 100% { border-color: var(--border); color: var(--light); }
   30%, 70% { border-color: var(--mark);   color: var(--white); }
