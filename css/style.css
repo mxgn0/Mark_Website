@@ -730,13 +730,12 @@ html[data-theme="dark"] .theme-toggle .lbl-hell { display: inline; }
 .footer__logo {
   display: inline-flex; align-items: center; gap: 10px;
   font-family: var(--font-display); font-weight: 700;
-  font-size: 1.375rem; letter-spacing: 0.1em; margin-bottom: 8px;
+  font-size: 1.375rem; letter-spacing: 0.1em;
 }
 /* Originallogo (aus og-image.png zugeschnitten). Im Dunkel-Modus komplett
    weiß (#f5f5f5): erst alles schwarz, dann invertieren — Transparenz bleibt. */
 .footer__logo-img { display: block; height: 56px; width: auto; }
 html[data-theme="dark"] .footer__logo-img { filter: brightness(0) invert(0.96); }
-.footer__brand p { font-size: 0.8125rem; color: var(--muted); }
 .footer__nav, .footer__legal { display: flex; flex-direction: column; gap: 12px; }
 .footer__nav a, .footer__legal a {
   font-size: 0.8125rem;
