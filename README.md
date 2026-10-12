@@ -13,8 +13,7 @@ WELKLOHS_Website/
 │   └── preview.css         # nur für preview.html
 ├── js/
 │   ├── main.js             # Navigation, Theme-Toggle, Scroll
-│   ├── calendar.js         # Buchungskalender (→ Cloudflare Worker)
-│   └── zeiten.js           # Terminzeiten Mo–Sa, halbstündlich (Website + Admin)
+│   └── calendar.js         # Buchungskalender (→ Cloudflare Worker)
 ├── pages/
 │   ├── admin.html          # Admin-Panel (Buchungen, Slots sperren)
 │   ├── impressum.html
@@ -38,6 +37,11 @@ https://mxgn0.github.io/Mark_Website/pages/admin.html
 
 Vorschau Farben/Buttons (Toolbar unten links, nirgends verlinkt):
 https://mxgn0.github.io/Mark_Website/preview.html
+
+## Terminzeiten
+
+Öffnungszeiten und Takt der Termine stehen nur im Cloudflare Worker `bookings`
+(`CONFIG.hours`, `CONFIG.slotMinutes`). Website und Admin-Panel übernehmen sie von dort.
 
 ## Buchungen → Notion
 
