@@ -13,7 +13,8 @@ WELKLOHS_Website/
 │   └── preview.css         # nur für preview.html
 ├── js/
 │   ├── main.js             # Navigation, Theme-Toggle, Scroll
-│   └── calendar.js         # Buchungskalender (→ Cloudflare Worker)
+│   ├── calendar.js         # Buchungskalender (→ Cloudflare Worker)
+│   └── zeiten.js           # Terminzeiten Mo–Sa, halbstündlich (Website + Admin)
 ├── pages/
 │   ├── admin.html          # Admin-Panel (Buchungen, Slots sperren)
 │   ├── impressum.html

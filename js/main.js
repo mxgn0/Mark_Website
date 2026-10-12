@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Die Navigation ist immer zu sehen — damit nicht fast nur sie leuchtet,
   // kommt sie nur in jedem vierten Fall dran. Farben und Art: style.css.
   const GLOW = '.nav__links a, .btn, .theme-toggle, .termin__to-kontakt, .kontakt-card, .social__link, ' +
-               '.cal__arrow, .cal__day--free:not(.cal__day--sel), .cal__slot:not(.cal__slot--sel), ' +
+               '.cal__arrow, .cal__day--free:not(.cal__day--sel), .cal__time select:not(.is-set), ' +
                '.intro__text a, .footer__nav a, .footer__legal a';
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
