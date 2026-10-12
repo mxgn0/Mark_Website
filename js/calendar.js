@@ -158,7 +158,7 @@ const CalendarWidget = {
     // Auswahlfeld erbt die Farbe des gewaehlten Tages
     wrap.style.setProperty('--hov', SPEKTRUM[new Date(+y, m - 1, +d).getDay()]);
     // Natives Auswahlfeld: am iPhone ein Drehrad, am Rechner eine Liste —
-    // bei 20 halbstündlichen Zeiten übersichtlicher als lauter Kacheln.
+    // bei bis zu 21 halbstündlichen Zeiten übersichtlicher als lauter Kacheln.
     wrap.innerHTML = `
       <div class="form-group cal__time">
         <label for="bkZeit">${dn}, ${d}.${m}.${y} · Uhrzeit</label>
