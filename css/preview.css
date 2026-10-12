@@ -191,11 +191,11 @@ html[data-brand="klinik"] .footer,
 html[data-brand="klinik"] .footer__brand p,
 html[data-brand="klinik"] .footer__nav a,
 html[data-brand="klinik"] .footer__legal a,
-html[data-brand="klinik"] .footer__bottom p { color: rgba(255,255,255,0.75); }
+html[data-brand="klinik"] .footer__copy,
+html[data-brand="klinik"] .footer__cookie { color: rgba(255,255,255,0.75); }
 html[data-brand="klinik"] .footer__logo { color: #fff; }
 html[data-brand="klinik"] .footer__nav a:hover,
 html[data-brand="klinik"] .footer__legal a:hover { color: #fff; }
-html[data-brand="klinik"] .footer__bottom { border-top-color: rgba(255,255,255,0.15); }
 html[data-brand="klinik"] .theme-toggle { border-color: var(--border); }
 
 /* ---------- FARBWELT: VERLAUF (eine einzige Farbgeste: Blau → Violett auf dem Primär-Button) ---------- */
