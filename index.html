@@ -14,16 +14,35 @@
   <meta property="og:url" content="https://mxgn0.github.io/Mark_Website/" />
   <meta name="twitter:card" content="summary_large_image" />
   <!-- ?v= bei jeder CSS/JS-Änderung hochzählen, sonst zeigen Browser noch die alte Datei -->
-  <link rel="stylesheet" href="css/style.css?v=20261009c" />
+  <link rel="stylesheet" href="css/style.css?v=20261012a" />
   <script>
-    // Cookie-Einwilligung sofort prüfen (vor dem Rendern)
-    (function () {
-      try {
-        if (localStorage.getItem('mg-cookie-consent')) {
-          document.documentElement.classList.add('cookie-consented');
-        }
-      } catch (e) {}
-    })();
+    // Cookie-Einwilligung — betrifft nur die Google-Maps-Karte, alles andere ist
+    // technisch notwendig. Schlüssel hochzählen, wenn sich am Banner etwas
+    // Wesentliches ändert: dann fragt er alle Besucher neu.
+    var CONSENT_KEY = 'welklohs-consent-2';
+    function getConsent() { try { return localStorage.getItem(CONSENT_KEY); } catch (e) { return null; } }
+    function setConsent(v) {
+      try { localStorage.setItem(CONSENT_KEY, v); } catch (e) {}
+      document.documentElement.classList.add('cookie-consented');
+      showMap(v === 'accepted');
+    }
+    // „Cookie-Einstellungen“ im Footer (oder Link …#cookie-einstellungen): Banner wieder zeigen
+    function openConsent() { document.documentElement.classList.remove('cookie-consented'); }
+    // Karte erst nach Zustimmung laden, bei Widerruf wieder entfernen
+    function showMap(on) {
+      var box = document.getElementById('mapBox');
+      if (!box) return;
+      var f = box.querySelector('iframe');
+      f.src = on ? f.getAttribute('data-src') : 'about:blank';
+      box.classList.toggle('is-loaded', on);
+    }
+    // vor dem Rendern prüfen, damit der Banner nicht kurz aufblitzt
+    if (getConsent() && location.hash !== '#cookie-einstellungen') {
+      document.documentElement.classList.add('cookie-consented');
+    }
+    document.addEventListener('DOMContentLoaded', function () {
+      if (getConsent() === 'accepted') showMap(true);
+    });
     // iOS: kein automatisches Scrollen beim Laden
     if ('scrollRestoration' in history) {
       history.scrollRestoration = 'manual';
@@ -50,16 +69,16 @@
   <!-- ═══════════════════════════════════
        COOKIE BANNER
   ═══════════════════════════════════ -->
-  <div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-banner" id="cookieBanner" role="dialog" aria-label="Cookie-Einstellungen">
     <div class="cookie-banner__inner">
       <p>
-        Diese Website verwendet Cookies für die grundlegende Funktionalität.
-        Keine Tracking- oder Werbe-Cookies.
-        <a href="pages/datenschutz.html">Mehr erfahren</a>
+        Keine Tracking- oder Werbe-Cookies. Nur die Google-Maps-Karte braucht Deine
+        Zustimmung, weil beim Laden Daten an Google gehen.
+        <a href="pages/datenschutz.html#cookies">Mehr erfahren</a>
       </p>
       <div class="cookie-banner__actions">
-        <button class="btn-cookie btn-cookie--reject" onclick="try{localStorage.setItem('mg-cookie-consent','rejected')}catch(e){}document.documentElement.classList.add('cookie-consented')">Ablehnen</button>
-        <button class="btn-cookie btn-cookie--accept" onclick="try{localStorage.setItem('mg-cookie-consent','accepted')}catch(e){}document.documentElement.classList.add('cookie-consented')">Akzeptieren</button>
+        <button class="btn-cookie btn-cookie--reject" onclick="setConsent('rejected')">Ablehnen</button>
+        <button class="btn-cookie btn-cookie--accept" onclick="setConsent('accepted')">Akzeptieren</button>
       </div>
     </div>
   </div>
@@ -233,14 +252,20 @@
           </div>
         </div>
 
-        <!-- Google Maps Embed -->
-        <div class="standort__map">
+        <!-- Google Maps: lädt erst nach Zustimmung (Cookie-Banner oder „Karte laden“) -->
+        <div class="standort__map" id="mapBox">
           <iframe
-            src="https://www.google.com/maps?q=Elisabeth-Schumacher-Stra%C3%9Fe+58,+04328+Leipzig&amp;z=16&amp;output=embed"
+            data-src="https://www.google.com/maps?q=Elisabeth-Schumacher-Stra%C3%9Fe+58,+04328+Leipzig&amp;z=16&amp;output=embed"
             width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
             title="WELKLOHS Standort">
           </iframe>
+          <div class="map-consent">
+            <span class="map-consent__icon"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+            <p>Die Karte kommt von Google Maps. Beim Laden werden Daten an Google übertragen.</p>
+            <button type="button" class="btn btn--outline" onclick="setConsent('accepted')">Karte laden</button>
+            <a href="https://www.google.com/maps/search/?api=1&amp;query=Elisabeth-Schumacher-Stra%C3%9Fe+58%2C+04328+Leipzig" target="_blank" rel="noopener">In Google Maps öffnen</a>
+          </div>
         </div>
       </div>
     </div>
@@ -344,6 +369,7 @@
         <a href="pages/impressum.html">Impressum</a>
         <a href="pages/datenschutz.html">Datenschutz</a>
         <a href="pages/Agb.html">AGB</a>
+        <button type="button" class="footer__cookie" id="cookie-einstellungen" onclick="openConsent()">Cookie-Einstellungen</button>
       </div>
     </div>
     <div class="footer__bottom">
@@ -351,7 +377,8 @@
     </div>
   </footer>
 
-  <script src="js/main.js?v=20261009c"></script>
-  <script src="js/calendar.js?v=20261009c"></script>
+  <script src="js/main.js?v=20261012a"></script>
+  <script src="js/zeiten.js?v=20261012a"></script>
+  <script src="js/calendar.js?v=20261012a"></script>
 </body>
 </html>

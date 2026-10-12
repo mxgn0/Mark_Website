@@ -71,6 +71,19 @@ const CalendarWidget = {
     }
   },
 
+  /* ---- Freie Zeiten eines Tages (Zeiten aus zeiten.js, heute nur die kommenden) ---- */
+  freeSlots(ds) {
+    const [y, m, d] = ds.split('-').map(Number);
+    const dt  = new Date(y, m - 1, d);
+    const bt  = this.data.blocked[ds] || [];
+    const bk  = this.data.booked[ds]  || [];
+    if (bt.includes('all')) return [];
+    const now = new Date();
+    const jetzt = dt.toDateString() === now.toDateString()
+      ? `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}` : '';
+    return terminSlots(dt.getDay()).filter(s => !bt.includes(s) && !bk.includes(s) && s > jetzt);
+  },
+
   /* ---- Monatsraster ---- */
   renderGrid() {
     const d = this.data;
@@ -97,16 +110,10 @@ const CalendarWidget = {
       const ds  = `${mm}-${String(n).padStart(2, '0')}`;
       const dt  = new Date(this.year, this.month, n);
       const dow = dt.getDay();
-      const work   = d.workDays.includes(dow);
+      const work   = terminSlots(dow).length > 0;
       const past   = dt < today;
       const blocked = d.blocked[ds]?.includes('all');
-
-      let free = 0;
-      if (work && !past && !blocked) {
-        const bt = d.blocked[ds] || [];
-        const bk = d.booked[ds]  || [];
-        free = d.slots.filter(s => !bt.includes(s) && !bk.includes(s)).length;
-      }
+      const free   = work && !past ? this.freeSlots(ds).length : 0;
 
       const btn = document.createElement('button');
       btn.className = 'cal__day';
@@ -129,42 +136,50 @@ const CalendarWidget = {
     }
   },
 
-  /* ---- Tag gewählt → Slots zeigen ---- */
+  /* ---- Tag gewählt → Uhrzeit wählen ---- */
   pickDate(ds) {
     this.selDate = ds; this.selTime = null;
     this.renderGrid();
     this.el.querySelector('.cal__form').innerHTML = '';
 
-    const bt = this.data.blocked[ds] || [];
-    const bk = this.data.booked[ds]  || [];
-    const free = this.data.slots.filter(s => !bt.includes(s) && !bk.includes(s));
+    const free = this.freeSlots(ds);
 
     const [y, m, d] = ds.split('-');
     const dn = ['So','Mo','Di','Mi','Do','Fr','Sa'][new Date(+y, m - 1, +d).getDay()];
 
     const wrap = this.el.querySelector('.cal__slots');
-    // Slots erben die Farbe des gewaehlten Tages
+    // Auswahlfeld erbt die Farbe des gewaehlten Tages
     wrap.style.setProperty('--hov', SPEKTRUM[new Date(+y, m - 1, +d).getDay()]);
+    // Natives Auswahlfeld: am iPhone ein Drehrad, am Rechner eine Liste —
+    // bei 20 halbstündlichen Zeiten übersichtlicher als lauter Kacheln.
     wrap.innerHTML = `
-      <p class="cal__slots-label">${dn}, ${d}.${m}.${y}</p>
-      <div class="cal__slots-grid">
-        ${free.map(s => `<button class="cal__slot" data-t="${s}">${s}</button>`).join('')}
+      <div class="form-group cal__time">
+        <label for="bkZeit">${dn}, ${d}.${m}.${y} · Uhrzeit</label>
+        <select id="bkZeit">
+          <option value="" disabled selected>Uhrzeit wählen …</option>
+          ${free.map(s => `<option value="${s}">${s} Uhr</option>`).join('')}
+        </select>
       </div>`;
-    wrap.querySelectorAll('.cal__slot').forEach(b =>
-      b.addEventListener('click', () => {
-        this.selTime = b.dataset.t;
-        wrap.querySelectorAll('.cal__slot').forEach(x => x.classList.remove('cal__slot--sel'));
-        b.classList.add('cal__slot--sel');
-        this.showForm();
-      }));
+    const sel = wrap.querySelector('select');
+    sel.addEventListener('change', () => {
+      this.selTime = sel.value;
+      sel.classList.add('is-set');
+      this.showForm();
+    });
   },
 
   /* ---- Buchungsformular ---- */
   showForm() {
     const [y, m, d] = this.selDate.split('-');
     const wrap = this.el.querySelector('.cal__form');
+    const label = `Termin am ${d}.${m}.${y} um ${this.selTime} Uhr`;
+    // Uhrzeit nur geändert → Formular samt Eingaben stehen lassen
+    if (wrap.querySelector('#bkSend')) {
+      wrap.querySelector('.cal__form-label').textContent = label;
+      return;
+    }
     wrap.innerHTML = `
-      <p class="cal__form-label">Termin am ${d}.${m}.${y} um ${this.selTime} Uhr</p>
+      <p class="cal__form-label">${label}</p>
       <div class="form-row">
         <div class="form-group"><label>Vorname *</label>
           <input type="text" id="bkV" required placeholder="Max"></div>
@@ -186,7 +201,7 @@ const CalendarWidget = {
           <option value="whatsapp">WhatsApp</option>
           <option value="sms">SMS</option>
           <option value="email">E-Mail</option>
-          <option value="telegram">Telegram</option>
+          <option value="telefon">Telefon</option>
         </select></div>
       <div class="form-group form-group--check">
         <label class="checkbox-label">

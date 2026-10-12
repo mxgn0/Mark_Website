@@ -102,8 +102,9 @@
     .btn--wa:hover { background: transparent; color: #25D366; }
     .btn--sms { background: #3b82f6; color: #fff; border-color: #3b82f6; }
     .btn--sms:hover { background: transparent; color: #3b82f6; }
-    .btn--tg { background: #229ED9; color: #fff; border-color: #229ED9; }
-    .btn--tg:hover { background: transparent; color: #229ED9; }
+    a.btn { text-decoration: none; }
+    .btn--tel { background: #2E8FFF; color: #fff; border-color: #2E8FFF; }
+    .btn--tel:hover { background: transparent; color: #2E8FFF; }
     .btn--mail { background: #888; color: #fff; border-color: #888; }
     .btn--mail:hover { background: transparent; color: #888; }
 
@@ -124,6 +125,7 @@
 
 <div id="app"></div>
 
+<script src="../js/zeiten.js?v=20261012a"></script>
 <script>
 const WORKER_URL = 'https://bookings.mxgn-studio.workers.dev'; // ← anpassen!
 let TOKEN = localStorage.getItem('welklohs_token') || '';
@@ -135,8 +137,7 @@ const app = () => $('#app');
 const MONTHS = ['Januar','Februar','März','April','Mai','Juni',
                 'Juli','August','September','Oktober','November','Dezember'];
 const DAYS   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-const SLOTS  = [];
-for (let h = 8; h < 17; h++) SLOTS.push(`${String(h).padStart(2,'0')}:00`);
+// Terminzeiten pro Wochentag: terminSlots() aus js/zeiten.js (gleiche Datei wie die Website)
 
 /* ---- API ---- */
 async function api(path, opts = {}) {
@@ -236,14 +237,15 @@ function renderGrid() {
     const dt = new Date(YEAR, MONTH, n);
     const dow = dt.getDay();
     const past = dt < today;
-    const work = (DATA.workDays || [1,2,3,4,5,6]).includes(dow); // Mo–Sa, sofern der Worker nichts anderes vorgibt
+    const slots = terminSlots(dow);
+    const work = slots.length > 0;
 
     const bl = DATA.blocked[ds] || [];
     const bk = DATA.booked[ds] || [];
     const allBlocked = bl.includes('all');
-    const blockedCount = allBlocked ? SLOTS.length : bl.length;
+    const blockedCount = allBlocked ? slots.length : bl.filter(t => slots.includes(t)).length;
     const bookedCount = bk.length;
-    const freeCount = SLOTS.length - blockedCount - bookedCount;
+    const freeCount = slots.length - blockedCount - bk.filter(b => slots.includes(b.time)).length;
 
     const div = document.createElement('div');
     div.className = 'day';
@@ -294,8 +296,10 @@ function renderDetail(ds) {
   });
 
   const grid = $('#slotsGrid');
+  // Buchungen ausserhalb der heutigen Zeiten (z. B. von vor einer Zeitänderung) trotzdem zeigen
+  const times = [...new Set([...terminSlots(new Date(+y, m-1, +d).getDay()), ...bk.map(b => b.time)])].sort();
 
-  SLOTS.forEach(time => {
+  times.forEach(time => {
     const isBlocked = allBlocked || bl.includes(time);
     const booking = bk.find(b => b.time === time);
 
@@ -306,7 +310,7 @@ function renderDetail(ds) {
       var phoneClean = booking.phone.replace(/[^0-9+]/g, '');
       var phoneWA = phoneClean.replace(/^\+/, '').replace(/^0/, '49');
       var pref = booking.contactVia || 'whatsapp';
-      var prefLabel = { whatsapp: 'WhatsApp', sms: 'SMS', email: 'E-Mail', telegram: 'Telegram' }[pref] || 'WhatsApp';
+      var prefLabel = { whatsapp: 'WhatsApp', sms: 'SMS', email: 'E-Mail', telefon: 'Telefon (Anruf)', telegram: 'Telegram' }[pref] || 'WhatsApp';
       function star(k) { return pref === k ? '★ ' : ''; }
       div.innerHTML = `
         <span class="slot__time">${time} Uhr</span>
@@ -335,7 +339,7 @@ function renderDetail(ds) {
             <button class="btn btn--sm btn--wa" data-wa="${time}" data-phone="${phoneWA}" data-name="${booking.name}" data-email="${booking.email || ''}">${star('whatsapp')}WhatsApp</button>
             <button class="btn btn--sm btn--sms" data-sms="${time}" data-phone="${phoneClean}" data-name="${booking.name}">${star('sms')}SMS</button>
             ${booking.email ? '<button class="btn btn--sm btn--mail" data-mail="' + time + '" data-email="' + booking.email + '" data-name="' + booking.name + '">' + star('email') + 'E-Mail</button>' : ''}
-            <button class="btn btn--sm btn--tg" data-tg="${time}" data-name="${booking.name}">${star('telegram')}Telegram</button>
+            <a class="btn btn--sm btn--tel" href="tel:${phoneClean}">${star('telefon')}Anrufen</a>
           </div>
         </div>
         <div class="slot__actions" style="margin-top:8px">
@@ -435,13 +439,6 @@ function renderDetail(ds) {
       var subjectMap = { confirm: 'Terminbestätigung', change: 'Terminänderung', cancel: 'Terminstornierung' };
       var subject = subjectMap[type] + ' WELKLOHS – ' + d + '.' + m + '.' + y;
       window.open('mailto:' + b.dataset.email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(msg), '_blank');
-    }));
-
-  grid.querySelectorAll('[data-tg]').forEach(b =>
-    b.addEventListener('click', () => {
-      var msg = buildMsg(b.dataset.tg, b.dataset.name, false);
-      // Telegram Share-Dialog: Text vorausgefüllt, Mark wählt nur den Kunden-Chat
-      window.open('https://t.me/share/url?url=%20&text=' + encodeURIComponent(msg), '_blank');
     }));
 }
 
