@@ -125,7 +125,6 @@
 
 <div id="app"></div>
 
-<script src="../js/zeiten.js?v=20261012a"></script>
 <script>
 const WORKER_URL = 'https://bookings.mxgn-studio.workers.dev'; // ← anpassen!
 let TOKEN = localStorage.getItem('welklohs_token') || '';
@@ -137,7 +136,15 @@ const app = () => $('#app');
 const MONTHS = ['Januar','Februar','März','April','Mai','Juni',
                 'Juli','August','September','Oktober','November','Dezember'];
 const DAYS   = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-// Terminzeiten pro Wochentag: terminSlots() aus js/zeiten.js (gleiche Datei wie die Website)
+
+// Startzeiten eines Wochentags — legt der Worker fest (CONFIG.hours)
+function slotsOn(dow) {
+  if (DATA.slotsByDay) return DATA.slotsByDay[dow] || [];
+  return (DATA.workDays || [1,2,3,4,5,6]).includes(dow) ? DATA.slots : [];   // ältere Worker-Fassung
+}
+
+// Kundeneingaben nie roh ins HTML — sonst könnte eine Buchung Code ins Admin-Panel schmuggeln
+const h = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 /* ---- API ---- */
 async function api(path, opts = {}) {
@@ -237,7 +244,7 @@ function renderGrid() {
     const dt = new Date(YEAR, MONTH, n);
     const dow = dt.getDay();
     const past = dt < today;
-    const slots = terminSlots(dow);
+    const slots = slotsOn(dow);
     const work = slots.length > 0;
 
     const bl = DATA.blocked[ds] || [];
@@ -297,7 +304,7 @@ function renderDetail(ds) {
 
   const grid = $('#slotsGrid');
   // Buchungen ausserhalb der heutigen Zeiten (z. B. von vor einer Zeitänderung) trotzdem zeigen
-  const times = [...new Set([...terminSlots(new Date(+y, m-1, +d).getDay()), ...bk.map(b => b.time)])].sort();
+  const times = [...new Set([...slotsOn(new Date(+y, m-1, +d).getDay()), ...bk.map(b => b.time)])].sort();
 
   times.forEach(time => {
     const isBlocked = allBlocked || bl.includes(time);
@@ -313,51 +320,51 @@ function renderDetail(ds) {
       var prefLabel = { whatsapp: 'WhatsApp', sms: 'SMS', email: 'E-Mail', telefon: 'Telefon (Anruf)', telegram: 'Telegram' }[pref] || 'WhatsApp';
       function star(k) { return pref === k ? '★ ' : ''; }
       div.innerHTML = `
-        <span class="slot__time">${time} Uhr</span>
+        <span class="slot__time">${h(time)} Uhr</span>
         <span class="slot__status slot__status--booked">Gebucht</span>
         <div class="slot__info">
-          ${booking.name}<br>
-          ${booking.phone}<br>
-          ${booking.vehicle}
-          ${booking.notes ? '<br>' + booking.notes : ''}
+          ${h(booking.name)}<br>
+          ${h(booking.phone)}<br>
+          ${h(booking.vehicle)}
+          ${booking.notes ? '<br>' + h(booking.notes) : ''}
           ${booking.newCustomer ? '<br><strong>★ Neukunde</strong>' : ''}
           <br><strong>Wunsch-Kontakt: ${prefLabel}</strong>
         </div>
         <div class="slot__confirm">
           <div class="slot__confirm-row">
-            <select data-type="${time}" class="slot__type">
+            <select data-type="${h(time)}" class="slot__type">
               <option value="confirm">Bestätigung</option>
               <option value="change">Terminänderung</option>
               <option value="cancel">Stornierung</option>
             </select>
           </div>
           <div class="slot__confirm-row">
-            <input type="text" placeholder="Dauer (z.B. 2 Stunden)" data-dur="${time}">
-            <input type="text" placeholder="Kosten (z.B. 180 €)" data-cost="${time}">
+            <input type="text" placeholder="Dauer (z.B. 2 Stunden)" data-dur="${h(time)}">
+            <input type="text" placeholder="Kosten (z.B. 180 €)" data-cost="${h(time)}">
           </div>
           <div class="slot__send-btns">
-            <button class="btn btn--sm btn--wa" data-wa="${time}" data-phone="${phoneWA}" data-name="${booking.name}" data-email="${booking.email || ''}">${star('whatsapp')}WhatsApp</button>
-            <button class="btn btn--sm btn--sms" data-sms="${time}" data-phone="${phoneClean}" data-name="${booking.name}">${star('sms')}SMS</button>
-            ${booking.email ? '<button class="btn btn--sm btn--mail" data-mail="' + time + '" data-email="' + booking.email + '" data-name="' + booking.name + '">' + star('email') + 'E-Mail</button>' : ''}
+            <button class="btn btn--sm btn--wa" data-wa="${h(time)}" data-phone="${phoneWA}" data-name="${h(booking.name)}" data-email="${h(booking.email)}">${star('whatsapp')}WhatsApp</button>
+            <button class="btn btn--sm btn--sms" data-sms="${h(time)}" data-phone="${phoneClean}" data-name="${h(booking.name)}">${star('sms')}SMS</button>
+            ${booking.email ? '<button class="btn btn--sm btn--mail" data-mail="' + h(time) + '" data-email="' + h(booking.email) + '" data-name="' + h(booking.name) + '">' + star('email') + 'E-Mail</button>' : ''}
             <a class="btn btn--sm btn--tel" href="tel:${phoneClean}">${star('telefon')}Anrufen</a>
           </div>
         </div>
         <div class="slot__actions" style="margin-top:8px">
-          <button class="btn btn--sm btn--red" data-cancel="${time}">Stornieren (ohne Mitteilung)</button>
+          <button class="btn btn--sm btn--red" data-cancel="${h(time)}">Stornieren (ohne Mitteilung)</button>
         </div>`;
     } else if (isBlocked) {
       div.innerHTML = `
-        <span class="slot__time">${time} Uhr</span>
+        <span class="slot__time">${h(time)} Uhr</span>
         <span class="slot__status slot__status--blocked">Gesperrt</span>
         <div class="slot__actions">
-          <button class="btn btn--sm btn--outline" data-unblock="${time}">Freigeben</button>
+          <button class="btn btn--sm btn--outline" data-unblock="${h(time)}">Freigeben</button>
         </div>`;
     } else {
       div.innerHTML = `
-        <span class="slot__time">${time} Uhr</span>
+        <span class="slot__time">${h(time)} Uhr</span>
         <span class="slot__status slot__status--free">Frei</span>
         <div class="slot__actions">
-          <button class="btn btn--sm btn--outline" data-block="${time}">Sperren</button>
+          <button class="btn btn--sm btn--outline" data-block="${h(time)}">Sperren</button>
         </div>`;
     }
     grid.appendChild(div);

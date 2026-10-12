@@ -71,7 +71,14 @@ const CalendarWidget = {
     }
   },
 
-  /* ---- Freie Zeiten eines Tages (Zeiten aus zeiten.js, heute nur die kommenden) ---- */
+  /* ---- Startzeiten eines Wochentags — legt der Worker fest (CONFIG.hours) ---- */
+  slotsOn(dow) {
+    const d = this.data;
+    if (d.slotsByDay) return d.slotsByDay[dow] || [];
+    return d.workDays.includes(dow) ? d.slots : [];   // ältere Worker-Fassung
+  },
+
+  /* ---- Freie Zeiten eines Tages (heute nur die kommenden) ---- */
   freeSlots(ds) {
     const [y, m, d] = ds.split('-').map(Number);
     const dt  = new Date(y, m - 1, d);
@@ -81,7 +88,7 @@ const CalendarWidget = {
     const now = new Date();
     const jetzt = dt.toDateString() === now.toDateString()
       ? `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}` : '';
-    return terminSlots(dt.getDay()).filter(s => !bt.includes(s) && !bk.includes(s) && s > jetzt);
+    return this.slotsOn(dt.getDay()).filter(s => !bt.includes(s) && !bk.includes(s) && s > jetzt);
   },
 
   /* ---- Monatsraster ---- */
@@ -110,7 +117,7 @@ const CalendarWidget = {
       const ds  = `${mm}-${String(n).padStart(2, '0')}`;
       const dt  = new Date(this.year, this.month, n);
       const dow = dt.getDay();
-      const work   = terminSlots(dow).length > 0;
+      const work   = this.slotsOn(dow).length > 0;
       const past   = dt < today;
       const blocked = d.blocked[ds]?.includes('all');
       const free   = work && !past ? this.freeSlots(ds).length : 0;
